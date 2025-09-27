@@ -1,0 +1,86 @@
+---
+title: "LAB1. PERSONAS DESAPARECIDAS EN ECUADOR"
+author: "Jesus Quinga"
+date: "25-09-2025"     
+format: "html"
+#format:
+#    html:
+#        embed-resources: true
+
+#AQUI PONER EL PATH HACIA SU AMBIENTE VIRTUAL
+execute:
+  python: C:/Users/Lenovo i5/Documents/MAESTRIA IA YACHAY TECH/APRENDIZAJE DE MAQUINA/SEMANA 1/.venv/Scripts/python.exe
+---
+
+## Personas desaparecidas enero a agosto 2025
+### Importar el dataset
+
+
+```{python}
+import altair as alt
+import pandas as pd
+personas = pd.read_excel('mdi_personas_desaparecidas_pm_2025_enero_a_agosto.xlsx',sheet_name='1')
+print(personas.head())
+```
+
+## Visualización en Altair
+
+
+### Visaulizacion 1: Pie Graph Distribución por rango de edad
+
+```{python}
+
+edades = personas["rango_edad"].value_counts().reset_index()
+edades.columns = ["rango_edad", "cantidad"]
+
+alt.Chart(edades).mark_arc().encode(
+    theta=alt.Theta(field="cantidad", type="quantitative"),
+    color=alt.Color(field="rango_edad", type="nominal"),
+    tooltip=["rango_edad", "cantidad"]
+).properties(
+    title="Distribución de desaparecidos por rango de edad",
+    width=400, height=400
+)
+
+#interactive: zoom, brush
+
+```
+
+
+
+### Visaulizacion 2:
+
+```{python}
+data_motivos = personas[["motivo_desaparicion"]].copy()
+motivos_top = data_motivos["motivo_desaparicion"].value_counts().nlargest(10).index.tolist()
+data_motivos = data_motivos[data_motivos["motivo_desaparicion"].isin(motivos_top)]
+
+alt.Chart(data_motivos).mark_bar().encode(
+    y=alt.Y("motivo_desaparicion:N", sort='-x', title="Motivo de desaparición"),
+    x=alt.X("count()", title="Cantidad"),
+    color="motivo_desaparicion:N",
+    tooltip=["motivo_desaparicion", "count()"]
+).properties(
+    title="Motivos más frecuentes de desaparición (Top 10)",
+    width=500, height=300
+)
+```
+
+
+
+### Visaulizacion 3: 
+
+
+```{python}
+data = personas[['sexo']]
+
+alt.Chart(data).mark_bar().encode(
+    x=alt.X("sexo:N", title="Sexo"),
+    y=alt.Y("count()", title="Cantidad"),
+    color="sexo:N",
+    tooltip=["sexo", "count()"]
+).properties(
+    title="Distribución de personas desaparecidas por sexo",
+    width=400, height=300
+)
+```
