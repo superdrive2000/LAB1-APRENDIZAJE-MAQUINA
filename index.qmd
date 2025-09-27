@@ -2,7 +2,11 @@
 title: "PRIMER REPORTE EN QUARTO"
 author: "Jesus Quinga"
 date: "25-09-2025"     
-format: "html"
+#format: "html"
+
+format:
+  html:
+    embed-resources: true
 
 #AQUI PONER EL PATH HACIA SU AMBIENTE VIRTUAL
 execute:
@@ -49,9 +53,56 @@ alt.Chart(cars).mark_point(filled=True).encode(
 
 ```
 
+```{python}
 
-### Subtitulo 3
 
-- lista
-    - elemento 1
-    - elemento 2
+alt.Chart(cars).mark_point(filled=True).encode(
+    x="Miles_per_Gallon",
+    y="Horsepower",
+    shape="Origin",
+    color = "Origin",
+    tooltip=["Name","Origin","Miles_per_Gallon","Horsepower"]
+).interactive()
+```
+
+
+### Agregacion
+
+Grafico de barras
+```{python}
+
+alt.Chart(cars).mark_bar().encode(
+    alt.X('Origin',sort='y'),
+    alt.Y('count()')
+)
+
+```
+
+`Mean()`de cada uno de los origenes
+
+```{python}
+
+alt.Chart(cars).mark_bar().encode(
+    alt.X('Origin',sort='y'),
+    alt.Y('mean(Weight_in_lbs)'),
+    tooltip=['Origin','mean(Weight_in_lbs)']
+).properties(
+    width= 200,
+    height = 200
+)
+
+```
+
+Grafico lineal
+
+
+```{python}
+alt.Chart(cars).mark_line(point=True).encode(
+    alt.X('Year'),
+    alt.Y('mean(Weight_in_lbs)'),
+    alt.Color('Origin')
+).properties(
+    width = 600
+).interactive()
+
+```
