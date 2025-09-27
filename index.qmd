@@ -1,0 +1,57 @@
+---
+title: "PRIMER REPORTE EN QUARTO"
+author: "Jesus Quinga"
+date: "25-09-2025"     
+format: "html"
+
+#AQUI PONER EL PATH HACIA SU AMBIENTE VIRTUAL
+execute:
+  python: C:/Users/Lenovo i5/Documents/MAESTRIA IA YACHAY TECH/APRENDIZAJE DE MAQUINA/SEMANA 1/.venv/Scripts/python.exe
+---
+
+
+# Titulo 1
+
+## Importar el dataset
+
+```{python}
+import altair as alt
+from vega_datasets import data
+cars = data.cars()
+print(cars.head())
+```
+
+
+## Visualización en Altair
+
+### Visualización scatterplot
+
+```{python}
+
+alt.Chart(cars).mark_point().encode(
+    x="Miles_per_Gallon",
+    y="Horsepower",
+    tooltip=["Name","Origin","Miles_per_Gallon","Horsepower"]
+).interactive()
+#interactive: zoom, brush
+
+```
+
+### Visualización scatterplot con color
+
+```{python}
+alt.Chart(cars).mark_point(filled=True).encode(
+    x="Miles_per_Gallon",
+    y="Horsepower",
+    color="Origin",
+    tooltip=["Name","Origin","Miles_per_Gallon","Horsepower"]
+).interactive()
+
+```
+
+
+### Subtitulo 3
+
+- lista
+    - elemento 1
+    - elemento 2
