@@ -1,0 +1,239 @@
+---
+title: "MIDTERM"
+author: "Jesus Quinga"
+date: "10-04-2025"     
+format: "html"
+#format:
+#    html:
+#        embed-resources: true
+
+#AQUI PONER EL PATH HACIA SU AMBIENTE VIRTUAL
+execute:
+  python: C:/Users/Lenovo i5/Documents/MAESTRIA IA YACHAY TECH/APRENDIZAJE DE MAQUINA/SEMANA 1/.venv/Scripts/python.exe
+---
+
+## 1. Import libraries
+
+```{python}
+from sklearn.datasets import load_breast_cancer
+from sklearn.linear_model import LinearRegression, LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, ConfusionMatrixDisplay
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+import pandas as pd
+from sklearn.metrics import mean_squared_error, r2_score
+
+```
+
+
+## PROBLEMA REGRESION
+
+Predicción Termocuple_min(24) en datos de eficiencia energetca de vivienda
+
+## 1. Carga de datos
+```{python}
+
+data = pd.read_excel('data regresion.xlsx')
+data
+
+```
+
+## 2. Variables independientes y variable objetivo
+
+```{python}
+X = data[['TempAir_max ºC','HumAir_max ºC','TempAir_min ºC']]
+y = data[['HumAir_min ºC']]
+
+print(X)
+print(y)
+```
+
+## 3. Split data
+
+```{python}
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,y,test_size=0.2,random_state=42
+)
+```
+
+## 4. Pipeline
+
+```{python}
+
+pipe = Pipeline([
+    ("escalado",StandardScaler()),
+    ("logreg",LinearRegression())
+])
+
+```
+
+## 5. Train modelo
+
+```{python}
+pipe.fit(X_train,y_train)
+```
+
+## 6. Test o prediction
+
+```{python}
+y_pred_pipe = pipe.predict(X_test)
+```
+
+## 7. Evaluacion
+
+
+```{python}
+# Evaluar el modelo
+mse = mean_squared_error(y_test, y_pred_pipe)
+r2 = r2_score(y_test, y_pred_pipe)
+print("MSE:", mse)
+print("R2:", r2)
+
+```
+
+## 8. Valores reales vs predichos
+
+```{python}
+import matplotlib.pyplot as plt
+plt.scatter(y_test, y_pred_pipe)
+plt.xlabel("Valores Reales (y_test)")
+plt.ylabel("Valores Predichos (y_pred_pipe)")
+plt.title("Gráfico de Dispersión: Valores Reales vs Predichos")
+plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=2)
+plt.show()
+
+```
+
+## 9. Curva de aprendizaje
+
+
+from sklearn.model_selection import learning_curve
+train_sizes, train_scores, test_scores = learning_curve(
+    pipe, X, y, cv=5, n_jobs=-1,
+    train_sizes=[0.1, 0.33, 0.55, 0.78, 1.0],
+    scoring='r2'
+)
+import numpy as np
+train_scores_mean = np.mean(train_scores, axis=1)
+test_scores_mean = np.mean(test_scores, axis=1)
+plt.plot(train_sizes, train_scores_mean, 'o-', color="r", label="Training score")
+plt.plot(train_sizes, test_scores_mean, 'o-', color="g", label="Cross-validation score")
+plt.xlabel("Training examples")
+plt.ylabel("Score")
+plt.title("Learning Curve")
+plt.legend(loc="best") 
+plt.show()
+
+
+![](learning curve.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## PROBLEMA CLASIFICACION
+
+Predecir el sector publico/privado de un dataset de pago de bono de desempleo
+
+## 1. Cargar Data
+```{python}
+
+data = pd.read_excel('farmacias_con_clusters.xlsx')
+data = data.dropna()
+data
+
+```
+
+## 2. Variables independientes y variable objetivo
+
+```{python}
+X = data[['venta','trx']]
+y = data[['sucursal']]
+
+y['sucursal'] = y['sucursal'].replace({'ECONOMICAS': 0, 'MEDICITY': 1})
+
+
+print(X)
+print(y)
+```
+
+## 3. Split data
+
+```{python}
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,y,test_size=0.2,random_state=40,stratify=y
+)
+```
+
+## 4. Pipeline
+
+```{python}
+
+pipe = Pipeline([
+    ("escalado",StandardScaler()),
+    ("logreg",LogisticRegression(max_iter=100000))
+])
+
+```
+
+## 5. Train modelo
+
+```{python}
+pipe.fit(X_train,y_train)
+```
+
+## 6. Predict
+
+```{python}
+y_pred = pipe.predict(X_test)
+```
+
+## 7. Evaluacion
+
+
+```{python}
+
+accuracy = accuracy_score(y_test,y_pred)
+precision = precision_score(y_test,y_pred)
+recall = recall_score(y_test,y_pred)
+f1 = f1_score(y_test,y_pred)
+
+print(f"accuracy: {accuracy}")
+print(f"precision: {precision}")
+print(f"recall: {recall}")
+print(f"f1: {f1}")
+
+```
+
+## 8. Matriz de Confusión
+
+
+
+```{python}
+ConfusionMatrixDisplay.from_predictions(y_test,y_pred)
+```
+
+## 9. Curva ROC
+
+
+```{python}
+from sklearn.metrics import RocCurveDisplay 
+RocCurveDisplay.from_predictions(y_test, y_pred)
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, ConfusionMatrixDisplay     
+print("Accuracy:", accuracy_score(y_test, y_pred))
+print("Precision:", precision_score(y_test, y_pred))
+print("Recall:", recall_score(y_test, y_pred))
+print("F1 Score:", f1_score(y_test, y_pred))
+```

@@ -110,5 +110,299 @@
     "title": "Exploratory Data Analysis (EDA)",
     "section": "2.5 Multivariate Analysis",
     "text": "2.5 Multivariate Analysis\nMultivariate analysis helps us understand the interactions and relationships among multiple variables simultaneously. In the context of numerical features, it is useful to explore pairwise distributions, correlations, and detect potential clusters or anomalies.\nWhen the number of variables is large, repeated charts such as histograms or scatter plot matrices help us summarize patterns efficiently and consistently across all numerical dimensions.\n\n2.5.1 Repeated Histograms for Numerical Columns\nWe first identify and isolate all numerical columns from the dataset. Then we repeat a histogram for each of these columns to understand the individual distributions. This overview is helpful to detect skewness, outliers, or binning decisions that affect how data is grouped visually.\n\n\nCode\n# Select only numerical columns\nnumerical_columns = movies_cleaned.select_dtypes('number').columns.tolist()\n\n\n\n\nCode\nalt.Chart(movies_cleaned).mark_bar().encode(\n    alt.X(alt.repeat(),type='quantitative',bin=alt.Bin(maxbins=30)),\n    alt.Y('count()')\n).properties(\n    width=150,\n    height=150\n).repeat(\n    numerical_columns,\n    columns=4\n)\n\n\n\n\n\n\n\n\n\n\n2.5.2 Scatter Plot Matrix (Pairplot)\nA scatter plot matrix shows the pairwise relationships between all numerical variables. This is a common exploratory tool to detect:\n\nCorrelations between variables\nOutliers or clusters\nRelationships useful for prediction models (e.g., to predict rating or budget)\n\nWe focus especially on the plots below the diagonal, as they are not duplicated.\n\n\nCode\nalt.Chart(movies_cleaned).mark_point().encode(\n    alt.X(alt.repeat('column'),type='quantitative'),\n    alt.Y(alt.repeat('row'),type='quantitative'),\n    alt.Tooltip('Title:N')\n).properties(\n    width=100,\n    height=100\n).repeat(\n    column=numerical_columns,\n    row=numerical_columns\n)\n\n\n\n\n\n\n\n\n\n\n2.5.3 Heatmap Matrix\nWhen scatter plots become too saturated (many overlapping points), heatmaps offer a better alternative by binning the numeric values and encoding the count in color intensity.\n\n\nCode\nalt.Chart(movies_cleaned).mark_rect().encode(\n    alt.X(alt.repeat('column'),type='quantitative',bin=alt.Bin(maxbins=30)),\n    alt.Y(alt.repeat('row'),type='quantitative',bin=alt.Bin(maxbins=30)),\n    alt.Color('count()'),\n    alt.Tooltip('count()')\n).properties(\n    width=100,\n    height=100\n).repeat(\n    column=numerical_columns,\n    row=numerical_columns\n).resolve_scale(\n    color='independent'\n)\n\n\n\n\n\n\n\n\nTo gain deeper insights into the dataset, it’s important to analyze how numerical variables behave across different categories. This type of multivariate analysis allows us to:\n\nCompare distributions across categories\nDetect outliers within categories\nObserve central tendency (median, quartiles) and spread (range, IQR)\n\nBoxplots are particularly effective for this purpose. In the following visualizations, we explore these relationships by repeating plots across combinations of categorical and numerical features.\n\n\n2.5.4 Filter Categorical Columns\nFirst, we select the relevant categorical columns, excluding identifiers and text-heavy variables like movie titles or director names.\n\n\nCode\ncategorical_columns =  movies_cleaned.select_dtypes('object').columns.to_list()\n\ncategorical_columns_remove = ['Title','Release_Date','Distributor','Director']\n\ncategorical_filtered = [col for col in categorical_columns if col not in categorical_columns_remove]\n\n\n\n\n2.5.5 Repeated Boxplots: Categorical vs Numerical\nWe repeat boxplots using combinations of categorical (rows) and numerical (columns) features. This matrix layout gives a clear visual overview of how numerical values are distributed within each category.\n\n\nCode\nalt.Chart(movies_cleaned).mark_boxplot().encode(\n    alt.X(alt.repeat('column'),type='quantitative'),\n    alt.Y(alt.repeat('row'),type='nominal'),\n    alt.Size('count()')\n).properties(\n    width=200,\n    height=200\n).repeat(\n    column=numerical_columns,\n    row=categorical_filtered\n)\n\n\n\n\n\n\n\n\n\n\n2.5.6 Faceted Boxplots\nFor more focused analysis, we can facet the boxplots using a specific categorical variable like MPAA_Rating, and repeat the chart by different categorical rows. This lets us keep the numerical axis fixed while comparing how categories vary across different classes (e.g., movie ratings).\n\n\nCode\nalt.Chart(movies_cleaned).mark_boxplot().encode(\n    alt.X('Running_Time_min', type='quantitative'),\n    alt.Y(alt.repeat('row'),type='nominal'),\n    alt.Size('count()'),\n    alt.Tooltip('Title:N')\n).properties(\n    width=100,\n    height=100\n).facet(\n    column='MPAA_Rating'\n).repeat(\n    row=categorical_filtered\n)"
+  },
+  {
+    "objectID": "metrics.html",
+    "href": "metrics.html",
+    "title": "Classification",
+    "section": "",
+    "text": "Code\nfrom sklearn.datasets import load_breast_cancer\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, ConfusionMatrixDisplay\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.preprocessing import StandardScaler\n\n\n\n\n\n\n\nCode\ndata = load_breast_cancer()\ndata\n\n\n{'data': array([[1.799e+01, 1.038e+01, 1.228e+02, ..., 2.654e-01, 4.601e-01,\n         1.189e-01],\n        [2.057e+01, 1.777e+01, 1.329e+02, ..., 1.860e-01, 2.750e-01,\n         8.902e-02],\n        [1.969e+01, 2.125e+01, 1.300e+02, ..., 2.430e-01, 3.613e-01,\n         8.758e-02],\n        ...,\n        [1.660e+01, 2.808e+01, 1.083e+02, ..., 1.418e-01, 2.218e-01,\n         7.820e-02],\n        [2.060e+01, 2.933e+01, 1.401e+02, ..., 2.650e-01, 4.087e-01,\n         1.240e-01],\n        [7.760e+00, 2.454e+01, 4.792e+01, ..., 0.000e+00, 2.871e-01,\n         7.039e-02]], shape=(569, 30)),\n 'target': array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1,\n        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,\n        0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0,\n        1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0,\n        1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1,\n        1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0,\n        0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1,\n        1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1,\n        1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0,\n        0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0,\n        1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1,\n        1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,\n        0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1,\n        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1,\n        1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0,\n        0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0,\n        0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0,\n        1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1,\n        1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0,\n        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1,\n        1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,\n        1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1,\n        1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1,\n        1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1,\n        1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,\n        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1]),\n 'frame': None,\n 'target_names': array(['malignant', 'benign'], dtype='&lt;U9'),\n 'DESCR': '.. _breast_cancer_dataset:\\n\\nBreast cancer Wisconsin (diagnostic) dataset\\n--------------------------------------------\\n\\n**Data Set Characteristics:**\\n\\n:Number of Instances: 569\\n\\n:Number of Attributes: 30 numeric, predictive attributes and the class\\n\\n:Attribute Information:\\n    - radius (mean of distances from center to points on the perimeter)\\n    - texture (standard deviation of gray-scale values)\\n    - perimeter\\n    - area\\n    - smoothness (local variation in radius lengths)\\n    - compactness (perimeter^2 / area - 1.0)\\n    - concavity (severity of concave portions of the contour)\\n    - concave points (number of concave portions of the contour)\\n    - symmetry\\n    - fractal dimension (\"coastline approximation\" - 1)\\n\\n    The mean, standard error, and \"worst\" or largest (mean of the three\\n    worst/largest values) of these features were computed for each image,\\n    resulting in 30 features.  For instance, field 0 is Mean Radius, field\\n    10 is Radius SE, field 20 is Worst Radius.\\n\\n    - class:\\n            - WDBC-Malignant\\n            - WDBC-Benign\\n\\n:Summary Statistics:\\n\\n===================================== ====== ======\\n                                        Min    Max\\n===================================== ====== ======\\nradius (mean):                        6.981  28.11\\ntexture (mean):                       9.71   39.28\\nperimeter (mean):                     43.79  188.5\\narea (mean):                          143.5  2501.0\\nsmoothness (mean):                    0.053  0.163\\ncompactness (mean):                   0.019  0.345\\nconcavity (mean):                     0.0    0.427\\nconcave points (mean):                0.0    0.201\\nsymmetry (mean):                      0.106  0.304\\nfractal dimension (mean):             0.05   0.097\\nradius (standard error):              0.112  2.873\\ntexture (standard error):             0.36   4.885\\nperimeter (standard error):           0.757  21.98\\narea (standard error):                6.802  542.2\\nsmoothness (standard error):          0.002  0.031\\ncompactness (standard error):         0.002  0.135\\nconcavity (standard error):           0.0    0.396\\nconcave points (standard error):      0.0    0.053\\nsymmetry (standard error):            0.008  0.079\\nfractal dimension (standard error):   0.001  0.03\\nradius (worst):                       7.93   36.04\\ntexture (worst):                      12.02  49.54\\nperimeter (worst):                    50.41  251.2\\narea (worst):                         185.2  4254.0\\nsmoothness (worst):                   0.071  0.223\\ncompactness (worst):                  0.027  1.058\\nconcavity (worst):                    0.0    1.252\\nconcave points (worst):               0.0    0.291\\nsymmetry (worst):                     0.156  0.664\\nfractal dimension (worst):            0.055  0.208\\n===================================== ====== ======\\n\\n:Missing Attribute Values: None\\n\\n:Class Distribution: 212 - Malignant, 357 - Benign\\n\\n:Creator:  Dr. William H. Wolberg, W. Nick Street, Olvi L. Mangasarian\\n\\n:Donor: Nick Street\\n\\n:Date: November, 1995\\n\\nThis is a copy of UCI ML Breast Cancer Wisconsin (Diagnostic) datasets.\\nhttps://goo.gl/U2Uwz2\\n\\nFeatures are computed from a digitized image of a fine needle\\naspirate (FNA) of a breast mass.  They describe\\ncharacteristics of the cell nuclei present in the image.\\n\\nSeparating plane described above was obtained using\\nMultisurface Method-Tree (MSM-T) [K. P. Bennett, \"Decision Tree\\nConstruction Via Linear Programming.\" Proceedings of the 4th\\nMidwest Artificial Intelligence and Cognitive Science Society,\\npp. 97-101, 1992], a classification method which uses linear\\nprogramming to construct a decision tree.  Relevant features\\nwere selected using an exhaustive search in the space of 1-4\\nfeatures and 1-3 separating planes.\\n\\nThe actual linear program used to obtain the separating plane\\nin the 3-dimensional space is that described in:\\n[K. P. Bennett and O. L. Mangasarian: \"Robust Linear\\nProgramming Discrimination of Two Linearly Inseparable Sets\",\\nOptimization Methods and Software 1, 1992, 23-34].\\n\\nThis database is also available through the UW CS ftp server:\\n\\nftp ftp.cs.wisc.edu\\ncd math-prog/cpo-dataset/machine-learn/WDBC/\\n\\n.. dropdown:: References\\n\\n  - W.N. Street, W.H. Wolberg and O.L. Mangasarian. Nuclear feature extraction\\n    for breast tumor diagnosis. IS&T/SPIE 1993 International Symposium on\\n    Electronic Imaging: Science and Technology, volume 1905, pages 861-870,\\n    San Jose, CA, 1993.\\n  - O.L. Mangasarian, W.N. Street and W.H. Wolberg. Breast cancer diagnosis and\\n    prognosis via linear programming. Operations Research, 43(4), pages 570-577,\\n    July-August 1995.\\n  - W.H. Wolberg, W.N. Street, and O.L. Mangasarian. Machine learning techniques\\n    to diagnose breast cancer from fine-needle aspirates. Cancer Letters 77 (1994)\\n    163-171.\\n',\n 'feature_names': array(['mean radius', 'mean texture', 'mean perimeter', 'mean area',\n        'mean smoothness', 'mean compactness', 'mean concavity',\n        'mean concave points', 'mean symmetry', 'mean fractal dimension',\n        'radius error', 'texture error', 'perimeter error', 'area error',\n        'smoothness error', 'compactness error', 'concavity error',\n        'concave points error', 'symmetry error',\n        'fractal dimension error', 'worst radius', 'worst texture',\n        'worst perimeter', 'worst area', 'worst smoothness',\n        'worst compactness', 'worst concavity', 'worst concave points',\n        'worst symmetry', 'worst fractal dimension'], dtype='&lt;U23'),\n 'filename': 'breast_cancer.csv',\n 'data_module': 'sklearn.datasets.data'}\n\n\n\n\nCode\n# data\nX = data.data #features\ny = data.target #etiqueta\n\n\n\n\n\n\n\nCode\nX_train, X_test, y_train, y_test = train_test_split(\n    X,y,test_size=0.2,random_state=42,stratify=y\n)\n\n# print(\"X_TRAIN\")\n# print(X_train)\n# print(\"X_TEST\")\n# print(X_test)\n\n# print(\"Y TRAIN\")\n# print(y_train)\n# print(\"Y_TEST\")\n# print(y_test)\n\n\n\n\n\n\n\nCode\nmodel = LogisticRegression(max_iter=100000)\nmodel.fit(X_train,y_train)\n\n\nLogisticRegression(max_iter=100000)In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.LogisticRegression?Documentation for LogisticRegressioniFitted\n        \n            \n                Parameters\n                \n\n\n\n\npenalty \n'l2'\n\n\n\ndual \nFalse\n\n\n\ntol \n0.0001\n\n\n\nC \n1.0\n\n\n\nfit_intercept \nTrue\n\n\n\nintercept_scaling \n1\n\n\n\nclass_weight \nNone\n\n\n\nrandom_state \nNone\n\n\n\nsolver \n'lbfgs'\n\n\n\nmax_iter \n100000\n\n\n\nmulti_class \n'deprecated'\n\n\n\nverbose \n0\n\n\n\nwarm_start \nFalse\n\n\n\nn_jobs \nNone\n\n\n\nl1_ratio \nNone\n\n\n\n\n            \n        \n    \n\n\n\n\n\n\n\nCode\ny_pred = model.predict(X_test)\n\n\n\n\n\n\n\nCode\naccuracy = accuracy_score(y_test,y_pred)\nprecision = precision_score(y_test,y_pred)\nrecall = recall_score(y_test,y_pred)\nf1 = f1_score(y_test,y_pred)\n\nprint(f\"accuracy: {accuracy}\")\nprint(f\"precision: {precision}\")\nprint(f\"recall: {recall}\")\nprint(f\"f1: {f1}\")\n\n\naccuracy: 0.9649122807017544\nprecision: 0.9594594594594594\nrecall: 0.9861111111111112\nf1: 0.9726027397260274\n\n\n\n\n\n\n\nCode\nConfusionMatrixDisplay.from_predictions(y_test,y_pred)"
+  },
+  {
+    "objectID": "metrics.html#cargar-el-dataset-1",
+    "href": "metrics.html#cargar-el-dataset-1",
+    "title": "Classification",
+    "section": "2. Cargar el Dataset",
+    "text": "2. Cargar el Dataset\n\n\nCode\ndata = load_breast_cancer()\ndata\n\n\n{'data': array([[1.799e+01, 1.038e+01, 1.228e+02, ..., 2.654e-01, 4.601e-01,\n         1.189e-01],\n        [2.057e+01, 1.777e+01, 1.329e+02, ..., 1.860e-01, 2.750e-01,\n         8.902e-02],\n        [1.969e+01, 2.125e+01, 1.300e+02, ..., 2.430e-01, 3.613e-01,\n         8.758e-02],\n        ...,\n        [1.660e+01, 2.808e+01, 1.083e+02, ..., 1.418e-01, 2.218e-01,\n         7.820e-02],\n        [2.060e+01, 2.933e+01, 1.401e+02, ..., 2.650e-01, 4.087e-01,\n         1.240e-01],\n        [7.760e+00, 2.454e+01, 4.792e+01, ..., 0.000e+00, 2.871e-01,\n         7.039e-02]], shape=(569, 30)),\n 'target': array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1,\n        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,\n        0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0,\n        1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0,\n        1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1,\n        1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0,\n        0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1,\n        1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1,\n        1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0,\n        0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0,\n        1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1,\n        1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,\n        0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1,\n        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1,\n        1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0,\n        0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0,\n        0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0,\n        1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1,\n        1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0,\n        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1,\n        1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,\n        1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1,\n        1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1,\n        1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1,\n        1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,\n        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1]),\n 'frame': None,\n 'target_names': array(['malignant', 'benign'], dtype='&lt;U9'),\n 'DESCR': '.. _breast_cancer_dataset:\\n\\nBreast cancer Wisconsin (diagnostic) dataset\\n--------------------------------------------\\n\\n**Data Set Characteristics:**\\n\\n:Number of Instances: 569\\n\\n:Number of Attributes: 30 numeric, predictive attributes and the class\\n\\n:Attribute Information:\\n    - radius (mean of distances from center to points on the perimeter)\\n    - texture (standard deviation of gray-scale values)\\n    - perimeter\\n    - area\\n    - smoothness (local variation in radius lengths)\\n    - compactness (perimeter^2 / area - 1.0)\\n    - concavity (severity of concave portions of the contour)\\n    - concave points (number of concave portions of the contour)\\n    - symmetry\\n    - fractal dimension (\"coastline approximation\" - 1)\\n\\n    The mean, standard error, and \"worst\" or largest (mean of the three\\n    worst/largest values) of these features were computed for each image,\\n    resulting in 30 features.  For instance, field 0 is Mean Radius, field\\n    10 is Radius SE, field 20 is Worst Radius.\\n\\n    - class:\\n            - WDBC-Malignant\\n            - WDBC-Benign\\n\\n:Summary Statistics:\\n\\n===================================== ====== ======\\n                                        Min    Max\\n===================================== ====== ======\\nradius (mean):                        6.981  28.11\\ntexture (mean):                       9.71   39.28\\nperimeter (mean):                     43.79  188.5\\narea (mean):                          143.5  2501.0\\nsmoothness (mean):                    0.053  0.163\\ncompactness (mean):                   0.019  0.345\\nconcavity (mean):                     0.0    0.427\\nconcave points (mean):                0.0    0.201\\nsymmetry (mean):                      0.106  0.304\\nfractal dimension (mean):             0.05   0.097\\nradius (standard error):              0.112  2.873\\ntexture (standard error):             0.36   4.885\\nperimeter (standard error):           0.757  21.98\\narea (standard error):                6.802  542.2\\nsmoothness (standard error):          0.002  0.031\\ncompactness (standard error):         0.002  0.135\\nconcavity (standard error):           0.0    0.396\\nconcave points (standard error):      0.0    0.053\\nsymmetry (standard error):            0.008  0.079\\nfractal dimension (standard error):   0.001  0.03\\nradius (worst):                       7.93   36.04\\ntexture (worst):                      12.02  49.54\\nperimeter (worst):                    50.41  251.2\\narea (worst):                         185.2  4254.0\\nsmoothness (worst):                   0.071  0.223\\ncompactness (worst):                  0.027  1.058\\nconcavity (worst):                    0.0    1.252\\nconcave points (worst):               0.0    0.291\\nsymmetry (worst):                     0.156  0.664\\nfractal dimension (worst):            0.055  0.208\\n===================================== ====== ======\\n\\n:Missing Attribute Values: None\\n\\n:Class Distribution: 212 - Malignant, 357 - Benign\\n\\n:Creator:  Dr. William H. Wolberg, W. Nick Street, Olvi L. Mangasarian\\n\\n:Donor: Nick Street\\n\\n:Date: November, 1995\\n\\nThis is a copy of UCI ML Breast Cancer Wisconsin (Diagnostic) datasets.\\nhttps://goo.gl/U2Uwz2\\n\\nFeatures are computed from a digitized image of a fine needle\\naspirate (FNA) of a breast mass.  They describe\\ncharacteristics of the cell nuclei present in the image.\\n\\nSeparating plane described above was obtained using\\nMultisurface Method-Tree (MSM-T) [K. P. Bennett, \"Decision Tree\\nConstruction Via Linear Programming.\" Proceedings of the 4th\\nMidwest Artificial Intelligence and Cognitive Science Society,\\npp. 97-101, 1992], a classification method which uses linear\\nprogramming to construct a decision tree.  Relevant features\\nwere selected using an exhaustive search in the space of 1-4\\nfeatures and 1-3 separating planes.\\n\\nThe actual linear program used to obtain the separating plane\\nin the 3-dimensional space is that described in:\\n[K. P. Bennett and O. L. Mangasarian: \"Robust Linear\\nProgramming Discrimination of Two Linearly Inseparable Sets\",\\nOptimization Methods and Software 1, 1992, 23-34].\\n\\nThis database is also available through the UW CS ftp server:\\n\\nftp ftp.cs.wisc.edu\\ncd math-prog/cpo-dataset/machine-learn/WDBC/\\n\\n.. dropdown:: References\\n\\n  - W.N. Street, W.H. Wolberg and O.L. Mangasarian. Nuclear feature extraction\\n    for breast tumor diagnosis. IS&T/SPIE 1993 International Symposium on\\n    Electronic Imaging: Science and Technology, volume 1905, pages 861-870,\\n    San Jose, CA, 1993.\\n  - O.L. Mangasarian, W.N. Street and W.H. Wolberg. Breast cancer diagnosis and\\n    prognosis via linear programming. Operations Research, 43(4), pages 570-577,\\n    July-August 1995.\\n  - W.H. Wolberg, W.N. Street, and O.L. Mangasarian. Machine learning techniques\\n    to diagnose breast cancer from fine-needle aspirates. Cancer Letters 77 (1994)\\n    163-171.\\n',\n 'feature_names': array(['mean radius', 'mean texture', 'mean perimeter', 'mean area',\n        'mean smoothness', 'mean compactness', 'mean concavity',\n        'mean concave points', 'mean symmetry', 'mean fractal dimension',\n        'radius error', 'texture error', 'perimeter error', 'area error',\n        'smoothness error', 'compactness error', 'concavity error',\n        'concave points error', 'symmetry error',\n        'fractal dimension error', 'worst radius', 'worst texture',\n        'worst perimeter', 'worst area', 'worst smoothness',\n        'worst compactness', 'worst concavity', 'worst concave points',\n        'worst symmetry', 'worst fractal dimension'], dtype='&lt;U23'),\n 'filename': 'breast_cancer.csv',\n 'data_module': 'sklearn.datasets.data'}\n\n\n\n\nCode\n# data\nX = data.data #features\ny = data.target #etiqueta"
+  },
+  {
+    "objectID": "metrics.html#pipeline",
+    "href": "metrics.html#pipeline",
+    "title": "Classification",
+    "section": "Pipeline",
+    "text": "Pipeline\n\n\nCode\npipe = Pipeline([\n    (\"escalado\",StandardScaler()),\n    (\"logreg\",LogisticRegression(max_iter=100000))\n])"
+  },
+  {
+    "objectID": "metrics.html#train",
+    "href": "metrics.html#train",
+    "title": "Classification",
+    "section": "Train",
+    "text": "Train\n\n\nCode\npipe.fit(X_train,y_train)\n\n\nPipeline(steps=[('escalado', StandardScaler()),\n                ('logreg', LogisticRegression(max_iter=100000))])In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.Pipeline?Documentation for PipelineiFitted\n        \n            \n                Parameters\n                \n\n\n\n\nsteps \n[('escalado', ...), ('logreg', ...)]\n\n\n\ntransform_input \nNone\n\n\n\nmemory \nNone\n\n\n\nverbose \nFalse\n\n\n\n\n            \n        \n    StandardScaler?Documentation for StandardScaler\n        \n            \n                Parameters\n                \n\n\n\n\ncopy \nTrue\n\n\n\nwith_mean \nTrue\n\n\n\nwith_std \nTrue\n\n\n\n\n            \n        \n    LogisticRegression?Documentation for LogisticRegression\n        \n            \n                Parameters\n                \n\n\n\n\npenalty \n'l2'\n\n\n\ndual \nFalse\n\n\n\ntol \n0.0001\n\n\n\nC \n1.0\n\n\n\nfit_intercept \nTrue\n\n\n\nintercept_scaling \n1\n\n\n\nclass_weight \nNone\n\n\n\nrandom_state \nNone\n\n\n\nsolver \n'lbfgs'\n\n\n\nmax_iter \n100000\n\n\n\nmulti_class \n'deprecated'\n\n\n\nverbose \n0\n\n\n\nwarm_start \nFalse\n\n\n\nn_jobs \nNone\n\n\n\nl1_ratio \nNone"
+  },
+  {
+    "objectID": "metrics.html#test-o-predicción",
+    "href": "metrics.html#test-o-predicción",
+    "title": "Classification",
+    "section": "Test o predicción",
+    "text": "Test o predicción\n\n\nCode\ny_pred_pipe = pipe.predict(X_test)"
+  },
+  {
+    "objectID": "metrics.html#evaluación-1",
+    "href": "metrics.html#evaluación-1",
+    "title": "Classification",
+    "section": "Evaluación",
+    "text": "Evaluación\n\n\nCode\nacc = accuracy_score(y_test,y_pred_pipe)\npre = precision_score(y_test,y_pred_pipe)\nre = recall_score(y_test,y_pred_pipe)\nfs = f1_score(y_test,y_pred_pipe)\n\nprint(acc)\nprint(pre)\nprint(re)\nprint(fs)\n\n\n0.9824561403508771\n0.9861111111111112\n0.9861111111111112\n0.9861111111111112"
+  },
+  {
+    "objectID": "metrics.html#confusión-matrix",
+    "href": "metrics.html#confusión-matrix",
+    "title": "Classification",
+    "section": "Confusión Matrix",
+    "text": "Confusión Matrix\n\n\nCode\nConfusionMatrixDisplay.from_predictions(y_test,y_pred_pipe )"
+  },
+  {
+    "objectID": "metrics.html#import-libraries",
+    "href": "metrics.html#import-libraries",
+    "title": "Classification",
+    "section": "",
+    "text": "Code\nfrom sklearn.datasets import load_breast_cancer\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, ConfusionMatrixDisplay\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.preprocessing import StandardScaler"
+  },
+  {
+    "objectID": "metrics.html#cargar-el-dataset",
+    "href": "metrics.html#cargar-el-dataset",
+    "title": "Classification",
+    "section": "",
+    "text": "Code\ndata = load_breast_cancer()\ndata\n\n\n{'data': array([[1.799e+01, 1.038e+01, 1.228e+02, ..., 2.654e-01, 4.601e-01,\n         1.189e-01],\n        [2.057e+01, 1.777e+01, 1.329e+02, ..., 1.860e-01, 2.750e-01,\n         8.902e-02],\n        [1.969e+01, 2.125e+01, 1.300e+02, ..., 2.430e-01, 3.613e-01,\n         8.758e-02],\n        ...,\n        [1.660e+01, 2.808e+01, 1.083e+02, ..., 1.418e-01, 2.218e-01,\n         7.820e-02],\n        [2.060e+01, 2.933e+01, 1.401e+02, ..., 2.650e-01, 4.087e-01,\n         1.240e-01],\n        [7.760e+00, 2.454e+01, 4.792e+01, ..., 0.000e+00, 2.871e-01,\n         7.039e-02]], shape=(569, 30)),\n 'target': array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1,\n        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,\n        0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0,\n        1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0,\n        1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1,\n        1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0,\n        0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1,\n        1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1,\n        1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0,\n        0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0,\n        1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1,\n        1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,\n        0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1,\n        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1,\n        1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0,\n        0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0,\n        0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0,\n        1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1,\n        1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0,\n        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1,\n        1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,\n        1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1,\n        1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1,\n        1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1,\n        1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,\n        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1]),\n 'frame': None,\n 'target_names': array(['malignant', 'benign'], dtype='&lt;U9'),\n 'DESCR': '.. _breast_cancer_dataset:\\n\\nBreast cancer Wisconsin (diagnostic) dataset\\n--------------------------------------------\\n\\n**Data Set Characteristics:**\\n\\n:Number of Instances: 569\\n\\n:Number of Attributes: 30 numeric, predictive attributes and the class\\n\\n:Attribute Information:\\n    - radius (mean of distances from center to points on the perimeter)\\n    - texture (standard deviation of gray-scale values)\\n    - perimeter\\n    - area\\n    - smoothness (local variation in radius lengths)\\n    - compactness (perimeter^2 / area - 1.0)\\n    - concavity (severity of concave portions of the contour)\\n    - concave points (number of concave portions of the contour)\\n    - symmetry\\n    - fractal dimension (\"coastline approximation\" - 1)\\n\\n    The mean, standard error, and \"worst\" or largest (mean of the three\\n    worst/largest values) of these features were computed for each image,\\n    resulting in 30 features.  For instance, field 0 is Mean Radius, field\\n    10 is Radius SE, field 20 is Worst Radius.\\n\\n    - class:\\n            - WDBC-Malignant\\n            - WDBC-Benign\\n\\n:Summary Statistics:\\n\\n===================================== ====== ======\\n                                        Min    Max\\n===================================== ====== ======\\nradius (mean):                        6.981  28.11\\ntexture (mean):                       9.71   39.28\\nperimeter (mean):                     43.79  188.5\\narea (mean):                          143.5  2501.0\\nsmoothness (mean):                    0.053  0.163\\ncompactness (mean):                   0.019  0.345\\nconcavity (mean):                     0.0    0.427\\nconcave points (mean):                0.0    0.201\\nsymmetry (mean):                      0.106  0.304\\nfractal dimension (mean):             0.05   0.097\\nradius (standard error):              0.112  2.873\\ntexture (standard error):             0.36   4.885\\nperimeter (standard error):           0.757  21.98\\narea (standard error):                6.802  542.2\\nsmoothness (standard error):          0.002  0.031\\ncompactness (standard error):         0.002  0.135\\nconcavity (standard error):           0.0    0.396\\nconcave points (standard error):      0.0    0.053\\nsymmetry (standard error):            0.008  0.079\\nfractal dimension (standard error):   0.001  0.03\\nradius (worst):                       7.93   36.04\\ntexture (worst):                      12.02  49.54\\nperimeter (worst):                    50.41  251.2\\narea (worst):                         185.2  4254.0\\nsmoothness (worst):                   0.071  0.223\\ncompactness (worst):                  0.027  1.058\\nconcavity (worst):                    0.0    1.252\\nconcave points (worst):               0.0    0.291\\nsymmetry (worst):                     0.156  0.664\\nfractal dimension (worst):            0.055  0.208\\n===================================== ====== ======\\n\\n:Missing Attribute Values: None\\n\\n:Class Distribution: 212 - Malignant, 357 - Benign\\n\\n:Creator:  Dr. William H. Wolberg, W. Nick Street, Olvi L. Mangasarian\\n\\n:Donor: Nick Street\\n\\n:Date: November, 1995\\n\\nThis is a copy of UCI ML Breast Cancer Wisconsin (Diagnostic) datasets.\\nhttps://goo.gl/U2Uwz2\\n\\nFeatures are computed from a digitized image of a fine needle\\naspirate (FNA) of a breast mass.  They describe\\ncharacteristics of the cell nuclei present in the image.\\n\\nSeparating plane described above was obtained using\\nMultisurface Method-Tree (MSM-T) [K. P. Bennett, \"Decision Tree\\nConstruction Via Linear Programming.\" Proceedings of the 4th\\nMidwest Artificial Intelligence and Cognitive Science Society,\\npp. 97-101, 1992], a classification method which uses linear\\nprogramming to construct a decision tree.  Relevant features\\nwere selected using an exhaustive search in the space of 1-4\\nfeatures and 1-3 separating planes.\\n\\nThe actual linear program used to obtain the separating plane\\nin the 3-dimensional space is that described in:\\n[K. P. Bennett and O. L. Mangasarian: \"Robust Linear\\nProgramming Discrimination of Two Linearly Inseparable Sets\",\\nOptimization Methods and Software 1, 1992, 23-34].\\n\\nThis database is also available through the UW CS ftp server:\\n\\nftp ftp.cs.wisc.edu\\ncd math-prog/cpo-dataset/machine-learn/WDBC/\\n\\n.. dropdown:: References\\n\\n  - W.N. Street, W.H. Wolberg and O.L. Mangasarian. Nuclear feature extraction\\n    for breast tumor diagnosis. IS&T/SPIE 1993 International Symposium on\\n    Electronic Imaging: Science and Technology, volume 1905, pages 861-870,\\n    San Jose, CA, 1993.\\n  - O.L. Mangasarian, W.N. Street and W.H. Wolberg. Breast cancer diagnosis and\\n    prognosis via linear programming. Operations Research, 43(4), pages 570-577,\\n    July-August 1995.\\n  - W.H. Wolberg, W.N. Street, and O.L. Mangasarian. Machine learning techniques\\n    to diagnose breast cancer from fine-needle aspirates. Cancer Letters 77 (1994)\\n    163-171.\\n',\n 'feature_names': array(['mean radius', 'mean texture', 'mean perimeter', 'mean area',\n        'mean smoothness', 'mean compactness', 'mean concavity',\n        'mean concave points', 'mean symmetry', 'mean fractal dimension',\n        'radius error', 'texture error', 'perimeter error', 'area error',\n        'smoothness error', 'compactness error', 'concavity error',\n        'concave points error', 'symmetry error',\n        'fractal dimension error', 'worst radius', 'worst texture',\n        'worst perimeter', 'worst area', 'worst smoothness',\n        'worst compactness', 'worst concavity', 'worst concave points',\n        'worst symmetry', 'worst fractal dimension'], dtype='&lt;U23'),\n 'filename': 'breast_cancer.csv',\n 'data_module': 'sklearn.datasets.data'}\n\n\n\n\nCode\n# data\nX = data.data #features\ny = data.target #etiqueta"
+  },
+  {
+    "objectID": "metrics.html#split-data",
+    "href": "metrics.html#split-data",
+    "title": "Classification",
+    "section": "",
+    "text": "Code\nX_train, X_test, y_train, y_test = train_test_split(\n    X,y,test_size=0.2,random_state=42,stratify=y\n)\n\n# print(\"X_TRAIN\")\n# print(X_train)\n# print(\"X_TEST\")\n# print(X_test)\n\n# print(\"Y TRAIN\")\n# print(y_train)\n# print(\"Y_TEST\")\n# print(y_test)"
+  },
+  {
+    "objectID": "metrics.html#entrenar-el-model",
+    "href": "metrics.html#entrenar-el-model",
+    "title": "Classification",
+    "section": "",
+    "text": "Code\nmodel = LogisticRegression(max_iter=100000)\nmodel.fit(X_train,y_train)\n\n\nLogisticRegression(max_iter=100000)In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.LogisticRegression?Documentation for LogisticRegressioniFitted\n        \n            \n                Parameters\n                \n\n\n\n\npenalty \n'l2'\n\n\n\ndual \nFalse\n\n\n\ntol \n0.0001\n\n\n\nC \n1.0\n\n\n\nfit_intercept \nTrue\n\n\n\nintercept_scaling \n1\n\n\n\nclass_weight \nNone\n\n\n\nrandom_state \nNone\n\n\n\nsolver \n'lbfgs'\n\n\n\nmax_iter \n100000\n\n\n\nmulti_class \n'deprecated'\n\n\n\nverbose \n0\n\n\n\nwarm_start \nFalse\n\n\n\nn_jobs \nNone\n\n\n\nl1_ratio \nNone"
+  },
+  {
+    "objectID": "metrics.html#predict",
+    "href": "metrics.html#predict",
+    "title": "Classification",
+    "section": "",
+    "text": "Code\ny_pred = model.predict(X_test)"
+  },
+  {
+    "objectID": "metrics.html#evaluacion",
+    "href": "metrics.html#evaluacion",
+    "title": "Classification",
+    "section": "",
+    "text": "Code\naccuracy = accuracy_score(y_test,y_pred)\nprecision = precision_score(y_test,y_pred)\nrecall = recall_score(y_test,y_pred)\nf1 = f1_score(y_test,y_pred)\n\nprint(f\"accuracy: {accuracy}\")\nprint(f\"precision: {precision}\")\nprint(f\"recall: {recall}\")\nprint(f\"f1: {f1}\")\n\n\naccuracy: 0.9649122807017544\nprecision: 0.9594594594594594\nrecall: 0.9861111111111112\nf1: 0.9726027397260274"
+  },
+  {
+    "objectID": "metrics.html#matriz-de-confusión",
+    "href": "metrics.html#matriz-de-confusión",
+    "title": "Classification",
+    "section": "",
+    "text": "Code\nConfusionMatrixDisplay.from_predictions(y_test,y_pred)"
+  },
+  {
+    "objectID": "metrics.html#split-data-1",
+    "href": "metrics.html#split-data-1",
+    "title": "Classification",
+    "section": "3. Split data",
+    "text": "3. Split data\n\n\nCode\nX_train, X_test, y_train, y_test = train_test_split(\n    X,y,test_size=0.2,random_state=42,stratify=y\n)"
+  },
+  {
+    "objectID": "metrics.html#train-modelo",
+    "href": "metrics.html#train-modelo",
+    "title": "Classification",
+    "section": "Train modelo",
+    "text": "Train modelo\n\n\nCode\npipe.fit(X_train,y_train)\n\n\nPipeline(steps=[('escalado', StandardScaler()),\n                ('logreg', LogisticRegression(max_iter=100000))])In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.Pipeline?Documentation for PipelineiFitted\n        \n            \n                Parameters\n                \n\n\n\n\nsteps \n[('escalado', ...), ('logreg', ...)]\n\n\n\ntransform_input \nNone\n\n\n\nmemory \nNone\n\n\n\nverbose \nFalse\n\n\n\n\n            \n        \n    StandardScaler?Documentation for StandardScaler\n        \n            \n                Parameters\n                \n\n\n\n\ncopy \nTrue\n\n\n\nwith_mean \nTrue\n\n\n\nwith_std \nTrue\n\n\n\n\n            \n        \n    LogisticRegression?Documentation for LogisticRegression\n        \n            \n                Parameters\n                \n\n\n\n\npenalty \n'l2'\n\n\n\ndual \nFalse\n\n\n\ntol \n0.0001\n\n\n\nC \n1.0\n\n\n\nfit_intercept \nTrue\n\n\n\nintercept_scaling \n1\n\n\n\nclass_weight \nNone\n\n\n\nrandom_state \nNone\n\n\n\nsolver \n'lbfgs'\n\n\n\nmax_iter \n100000\n\n\n\nmulti_class \n'deprecated'\n\n\n\nverbose \n0\n\n\n\nwarm_start \nFalse\n\n\n\nn_jobs \nNone\n\n\n\nl1_ratio \nNone"
+  },
+  {
+    "objectID": "metrics.html#test-o-prediction",
+    "href": "metrics.html#test-o-prediction",
+    "title": "Classification",
+    "section": "Test o prediction",
+    "text": "Test o prediction\n\n\nCode\ny_pred_pipe = pipe.predict(X_test)"
+  },
+  {
+    "objectID": "metrics.html#evaluacion-1",
+    "href": "metrics.html#evaluacion-1",
+    "title": "Classification",
+    "section": "6. Evaluacion",
+    "text": "6. Evaluacion\n\n\nCode\naccuracy = accuracy_score(y_test,y_pred_pipe)\nprecision = precision_score(y_test,y_pred_pipe)\nrecall = recall_score(y_test,y_pred_pipe)\nf1 = f1_score(y_test,y_pred_pipe)\n\nprint(f\"accuracy: {accuracy}\")\nprint(f\"precision: {precision}\")\nprint(f\"recall: {recall}\")\nprint(f\"f1: {f1}\")\n\n\naccuracy: 0.9824561403508771\nprecision: 0.9861111111111112\nrecall: 0.9861111111111112\nf1: 0.9861111111111112"
+  },
+  {
+    "objectID": "metrics.html#matriz-de-confusión-1",
+    "href": "metrics.html#matriz-de-confusión-1",
+    "title": "Classification",
+    "section": "Matriz de confusión",
+    "text": "Matriz de confusión\n\n\nCode\nConfusionMatrixDisplay.from_predictions(y_test,y_pred_pipe)"
+  },
+  {
+    "objectID": "MIDTER.html",
+    "href": "MIDTER.html",
+    "title": "MIDTERM",
+    "section": "",
+    "text": "Code\nfrom sklearn.datasets import load_breast_cancer\nfrom sklearn.linear_model import LinearRegression, LogisticRegression\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, ConfusionMatrixDisplay\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.preprocessing import StandardScaler\nimport pandas as pd\nfrom sklearn.metrics import mean_squared_error, r2_score"
+  },
+  {
+    "objectID": "MIDTER.html#problema-regresion",
+    "href": "MIDTER.html#problema-regresion",
+    "title": "MIDTERM",
+    "section": "PROBLEMA REGRESION",
+    "text": "PROBLEMA REGRESION\nPredicción Termocuple_min(24) en datos de eficiencia energetca de vivienda"
+  },
+  {
+    "objectID": "MIDTER.html#problema-calisficacion",
+    "href": "MIDTER.html#problema-calisficacion",
+    "title": "LAB1. PERSONAS DESAPARECIDAS EN ECUADOR",
+    "section": "PROBLEMA CALISFICACION",
+    "text": "PROBLEMA CALISFICACION\nclasificar una persona como “empleado” vs “desempleado” basándote en variables numéricas como edad, horas trabajadas, nivel de educación numérico codificado, ingreso, etc."
+  },
+  {
+    "objectID": "MIDTER.html#import-libraries",
+    "href": "MIDTER.html#import-libraries",
+    "title": "MIDTERM",
+    "section": "",
+    "text": "Code\nfrom sklearn.datasets import load_breast_cancer\nfrom sklearn.linear_model import LinearRegression, LogisticRegression\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, ConfusionMatrixDisplay\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.preprocessing import StandardScaler\nimport pandas as pd\nfrom sklearn.metrics import mean_squared_error, r2_score"
+  },
+  {
+    "objectID": "MIDTER.html#variables-independientes-y-variable-objetivo",
+    "href": "MIDTER.html#variables-independientes-y-variable-objetivo",
+    "title": "MIDTERM",
+    "section": "2. Variables independientes y variable objetivo",
+    "text": "2. Variables independientes y variable objetivo\n\n\nCode\nX = data[['TempAir_max ºC','HumAir_max ºC','TempAir_min ºC']]\ny = data[['HumAir_min ºC']]\n\nprint(X)\nprint(y)\n\n\n     TempAir_max ºC  HumAir_max ºC  TempAir_min ºC\n0             22.43           92.1           15.90\n1             23.85           93.0           14.45\n2             24.16           92.3           14.86\n3             22.63           93.1           14.58\n4             24.82           92.8           14.69\n..              ...            ...             ...\n199           24.06           92.1           13.82\n200           23.18           91.9           14.45\n201           22.00           92.5           14.04\n202           22.18           93.4           12.77\n203           23.51           92.5           13.66\n\n[204 rows x 3 columns]\n     HumAir_min ºC\n0            68.90\n1            51.35\n2            55.23\n3            65.61\n4            51.53\n..             ...\n199          48.51\n200          55.52\n201          68.68\n202          52.13\n203          50.88\n\n[204 rows x 1 columns]"
+  },
+  {
+    "objectID": "MIDTER.html#problema-clasificacion",
+    "href": "MIDTER.html#problema-clasificacion",
+    "title": "MIDTERM",
+    "section": "PROBLEMA CLASIFICACION",
+    "text": "PROBLEMA CLASIFICACION\nPredecir el sector publico/privado de un dataset de pago de bono de desempleo"
+  },
+  {
+    "objectID": "MIDTER.html#carga-de-datos",
+    "href": "MIDTER.html#carga-de-datos",
+    "title": "MIDTERM",
+    "section": "1. Carga de datos",
+    "text": "1. Carga de datos\n\n\nCode\ndata = pd.read_excel('data regresion.xlsx')\ndata\n\n\n\n\n\n\n\n\n\nFecha - date\nTempAir_Avg\\nºC\nHumAir_Avg %\nTermocuple_Avg(24) ºC\nTempAir_max ºC\nHumAir_max ºC\nTermocuple_max(24) ºC\nTempAir_min ºC\nHumAir_min ºC\nTermocuple_min(24)\n\n\n\n\n0\n2022-05-11\n18.131765\n85.298676\n27.136471\n22.43\n92.1\n27.91\n15.90\n68.90\n25.88\n\n\n1\n2022-05-12\n19.732662\n70.696883\n24.767987\n23.85\n93.0\n26.87\n14.45\n51.35\n19.86\n\n\n2\n2022-05-13\n19.923765\n73.838519\n24.948519\n24.16\n92.3\n27.43\n14.86\n55.23\n17.80\n\n\n3\n2022-05-14\n18.581579\n82.738947\n24.538355\n22.63\n93.1\n26.40\n14.58\n65.61\n19.45\n\n\n4\n2022-05-15\n20.484815\n75.320000\n25.934012\n24.82\n92.8\n28.84\n14.69\n51.53\n18.65\n\n\n...\n...\n...\n...\n...\n...\n...\n...\n...\n...\n...\n\n\n199\n2022-11-26\n19.632914\n69.829735\n25.949073\n24.06\n92.1\n28.87\n13.82\n48.51\n18.21\n\n\n200\n2022-11-27\n19.131071\n73.641643\n25.606643\n23.18\n91.9\n28.40\n14.45\n55.52\n18.73\n\n\n201\n2022-11-28\n17.565274\n83.274863\n24.372534\n22.00\n92.5\n26.40\n14.04\n68.68\n18.68\n\n\n202\n2022-11-29\n18.733377\n73.794834\n24.994305\n22.18\n93.4\n28.08\n12.77\n52.13\n17.41\n\n\n203\n2022-11-30\n20.230169\n64.898814\n22.590847\n23.51\n92.5\n25.36\n13.66\n50.88\n18.56\n\n\n\n\n204 rows × 10 columns"
+  },
+  {
+    "objectID": "MIDTER.html#split-data",
+    "href": "MIDTER.html#split-data",
+    "title": "MIDTERM",
+    "section": "3. Split data",
+    "text": "3. Split data\n\n\nCode\nX_train, X_test, y_train, y_test = train_test_split(\n    X,y,test_size=0.2,random_state=42\n)"
+  },
+  {
+    "objectID": "MIDTER.html#pipeline",
+    "href": "MIDTER.html#pipeline",
+    "title": "MIDTERM",
+    "section": "4. Pipeline",
+    "text": "4. Pipeline\n\n\nCode\npipe = Pipeline([\n    (\"escalado\",StandardScaler()),\n    (\"logreg\",LinearRegression())\n])"
+  },
+  {
+    "objectID": "MIDTER.html#train-modelo",
+    "href": "MIDTER.html#train-modelo",
+    "title": "MIDTERM",
+    "section": "5. Train modelo",
+    "text": "5. Train modelo\n\n\nCode\npipe.fit(X_train,y_train)\n\n\nPipeline(steps=[('escalado', StandardScaler()), ('logreg', LinearRegression())])In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.Pipeline?Documentation for PipelineiFitted\n        \n            \n                Parameters\n                \n\n\n\n\nsteps \n[('escalado', ...), ('logreg', ...)]\n\n\n\ntransform_input \nNone\n\n\n\nmemory \nNone\n\n\n\nverbose \nFalse\n\n\n\n\n            \n        \n    StandardScaler?Documentation for StandardScaler\n        \n            \n                Parameters\n                \n\n\n\n\ncopy \nTrue\n\n\n\nwith_mean \nTrue\n\n\n\nwith_std \nTrue\n\n\n\n\n            \n        \n    LinearRegression?Documentation for LinearRegression\n        \n            \n                Parameters\n                \n\n\n\n\nfit_intercept \nTrue\n\n\n\ncopy_X \nTrue\n\n\n\ntol \n1e-06\n\n\n\nn_jobs \nNone\n\n\n\npositive \nFalse"
+  },
+  {
+    "objectID": "MIDTER.html#test-o-prediction",
+    "href": "MIDTER.html#test-o-prediction",
+    "title": "MIDTERM",
+    "section": "6. Test o prediction",
+    "text": "6. Test o prediction\n\n\nCode\ny_pred_pipe = pipe.predict(X_test)"
+  },
+  {
+    "objectID": "MIDTER.html#evaluacion",
+    "href": "MIDTER.html#evaluacion",
+    "title": "MIDTERM",
+    "section": "7. Evaluacion",
+    "text": "7. Evaluacion\n\n\nCode\n# Evaluar el modelo\nmse = mean_squared_error(y_test, y_pred_pipe)\nr2 = r2_score(y_test, y_pred_pipe)\nprint(\"MSE:\", mse)\nprint(\"R2:\", r2)\n\n\nMSE: 28.83933122330356\nR2: 0.7729267679935119"
+  },
+  {
+    "objectID": "MIDTER.html#valores-reales-vs-predichos",
+    "href": "MIDTER.html#valores-reales-vs-predichos",
+    "title": "MIDTERM",
+    "section": "8. Valores reales vs predichos",
+    "text": "8. Valores reales vs predichos\n\n\nCode\nimport matplotlib.pyplot as plt\nplt.scatter(y_test, y_pred_pipe)\nplt.xlabel(\"Valores Reales (y_test)\")\nplt.ylabel(\"Valores Predichos (y_pred_pipe)\")\nplt.title(\"Gráfico de Dispersión: Valores Reales vs Predichos\")\nplt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=2)\nplt.show()"
+  },
+  {
+    "objectID": "MIDTER.html#curva-de-aprendizaje",
+    "href": "MIDTER.html#curva-de-aprendizaje",
+    "title": "MIDTERM",
+    "section": "9. Curva de aprendizaje",
+    "text": "9. Curva de aprendizaje\nfrom sklearn.model_selection import learning_curve train_sizes, train_scores, test_scores = learning_curve( pipe, X, y, cv=5, n_jobs=-1, train_sizes=[0.1, 0.33, 0.55, 0.78, 1.0], scoring=‘r2’ ) import numpy as np train_scores_mean = np.mean(train_scores, axis=1) test_scores_mean = np.mean(test_scores, axis=1) plt.plot(train_sizes, train_scores_mean, ‘o-’, color=“r”, label=“Training score”) plt.plot(train_sizes, test_scores_mean, ‘o-’, color=“g”, label=“Cross-validation score”) plt.xlabel(“Training examples”) plt.ylabel(“Score”) plt.title(“Learning Curve”) plt.legend(loc=“best”) plt.show()"
+  },
+  {
+    "objectID": "MIDTER.html#cargar-data",
+    "href": "MIDTER.html#cargar-data",
+    "title": "MIDTERM",
+    "section": "1. Cargar Data",
+    "text": "1. Cargar Data\n\n\nCode\ndata = pd.read_excel('farmacias_con_clusters.xlsx')\ndata = data.dropna()\ndata\n\n\n\n\n\n\n\n\n\nfarmacia\ntipofarmacia\nventa\ntrx\nnomina\nsucursal\ncluster\nperfil\n\n\n\n\n0\nECO QUITO SAN JOSE DE MINAS\nFRANQUICIA\n29341.6987\n2991\n2\nECONOMICAS\n0\n44\n\n\n1\nECO MODERNA\nFRANQUICIA\n61003.9857\n5700\n4\nECONOMICAS\n0\n46\n\n\n2\nECO OTAVALO 31 DE OCTUBRE\nFRANQUICIA\n37030.7980\n5984\n3\nECONOMICAS\n0\n46\n\n\n3\nECO OTAVALO COPACABANA\nFRANQUICIA\n47367.4135\n6742\n4\nECONOMICAS\n0\n47\n\n\n4\nECO CRUZ ROJA OTAVALO\nFRANQUICIA\n63026.8760\n6949\n4\nECONOMICAS\n0\n48\n\n\n...\n...\n...\n...\n...\n...\n...\n...\n...\n\n\n958\nECO QUITO CIUDAD FUTURA\nFRANQUICIA\n32064.8565\n4928\n2\nECONOMICAS\n99\n51\n\n\n959\nECO CHILLOGALLO\nFRANQUICIA\n25195.3154\n3007\n2\nECONOMICAS\n99\n52\n\n\n960\nECO QUITO LUCHA MEDIA\nFRANQUICIA\n16635.9057\n1856\n1\nECONOMICAS\n99\n52\n\n\n961\nECO QUITO TAMBILLO\nFRANQUICIA\n47009.0518\n5961\n3\nECONOMICAS\n99\n52\n\n\n962\nECO QUITUMBE REINA DEL CISNE\nFRANQUICIA\n35663.2024\n2976\n2\nECONOMICAS\n99\n52\n\n\n\n\n963 rows × 8 columns"
+  },
+  {
+    "objectID": "MIDTER.html#variables-independientes-y-variable-objetivo-1",
+    "href": "MIDTER.html#variables-independientes-y-variable-objetivo-1",
+    "title": "MIDTERM",
+    "section": "2. Variables independientes y variable objetivo",
+    "text": "2. Variables independientes y variable objetivo\n\n\nCode\nX = data[['venta','trx']]\ny = data[['sucursal']]\n\ny['sucursal'] = y['sucursal'].replace({'ECONOMICAS': 0, 'MEDICITY': 1})\n\n\nprint(X)\nprint(y)\n\n\n          venta   trx\n0    29341.6987  2991\n1    61003.9857  5700\n2    37030.7980  5984\n3    47367.4135  6742\n4    63026.8760  6949\n..          ...   ...\n958  32064.8565  4928\n959  25195.3154  3007\n960  16635.9057  1856\n961  47009.0518  5961\n962  35663.2024  2976\n\n[963 rows x 2 columns]\n     sucursal\n0           0\n1           0\n2           0\n3           0\n4           0\n..        ...\n958         0\n959         0\n960         0\n961         0\n962         0\n\n[963 rows x 1 columns]\n\n\nC:\\Users\\Lenovo i5\\AppData\\Local\\Temp\\ipykernel_56940\\2158973334.py:4: FutureWarning: Downcasting behavior in `replace` is deprecated and will be removed in a future version. To retain the old behavior, explicitly call `result.infer_objects(copy=False)`. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`\n  y['sucursal'] = y['sucursal'].replace({'ECONOMICAS': 0, 'MEDICITY': 1})\nC:\\Users\\Lenovo i5\\AppData\\Local\\Temp\\ipykernel_56940\\2158973334.py:4: SettingWithCopyWarning: \nA value is trying to be set on a copy of a slice from a DataFrame.\nTry using .loc[row_indexer,col_indexer] = value instead\n\nSee the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy\n  y['sucursal'] = y['sucursal'].replace({'ECONOMICAS': 0, 'MEDICITY': 1})"
+  },
+  {
+    "objectID": "MIDTER.html#split-data-1",
+    "href": "MIDTER.html#split-data-1",
+    "title": "MIDTERM",
+    "section": "3. Split data",
+    "text": "3. Split data\n\n\nCode\nX_train, X_test, y_train, y_test = train_test_split(\n    X,y,test_size=0.2,random_state=40,stratify=y\n)"
+  },
+  {
+    "objectID": "MIDTER.html#pipeline-1",
+    "href": "MIDTER.html#pipeline-1",
+    "title": "MIDTERM",
+    "section": "4. Pipeline",
+    "text": "4. Pipeline\n\n\nCode\npipe = Pipeline([\n    (\"escalado\",StandardScaler()),\n    (\"logreg\",LogisticRegression(max_iter=100000))\n])"
+  },
+  {
+    "objectID": "MIDTER.html#train-modelo-1",
+    "href": "MIDTER.html#train-modelo-1",
+    "title": "MIDTERM",
+    "section": "5. Train modelo",
+    "text": "5. Train modelo\n\n\nCode\npipe.fit(X_train,y_train)\n\n\nC:\\Users\\Lenovo i5\\Documents\\MAESTRIA IA YACHAY TECH\\APRENDIZAJE DE MAQUINA\\SEMANA 1\\.venv\\Lib\\site-packages\\sklearn\\utils\\validation.py:1406: DataConversionWarning: A column-vector y was passed when a 1d array was expected. Please change the shape of y to (n_samples, ), for example using ravel().\n  y = column_or_1d(y, warn=True)\n\n\nPipeline(steps=[('escalado', StandardScaler()),\n                ('logreg', LogisticRegression(max_iter=100000))])In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.Pipeline?Documentation for PipelineiFitted\n        \n            \n                Parameters\n                \n\n\n\n\nsteps \n[('escalado', ...), ('logreg', ...)]\n\n\n\ntransform_input \nNone\n\n\n\nmemory \nNone\n\n\n\nverbose \nFalse\n\n\n\n\n            \n        \n    StandardScaler?Documentation for StandardScaler\n        \n            \n                Parameters\n                \n\n\n\n\ncopy \nTrue\n\n\n\nwith_mean \nTrue\n\n\n\nwith_std \nTrue\n\n\n\n\n            \n        \n    LogisticRegression?Documentation for LogisticRegression\n        \n            \n                Parameters\n                \n\n\n\n\npenalty \n'l2'\n\n\n\ndual \nFalse\n\n\n\ntol \n0.0001\n\n\n\nC \n1.0\n\n\n\nfit_intercept \nTrue\n\n\n\nintercept_scaling \n1\n\n\n\nclass_weight \nNone\n\n\n\nrandom_state \nNone\n\n\n\nsolver \n'lbfgs'\n\n\n\nmax_iter \n100000\n\n\n\nmulti_class \n'deprecated'\n\n\n\nverbose \n0\n\n\n\nwarm_start \nFalse\n\n\n\nn_jobs \nNone\n\n\n\nl1_ratio \nNone"
+  },
+  {
+    "objectID": "MIDTER.html#predict",
+    "href": "MIDTER.html#predict",
+    "title": "MIDTERM",
+    "section": "6. Predict",
+    "text": "6. Predict\n\n\nCode\ny_pred = pipe.predict(X_test)"
+  },
+  {
+    "objectID": "MIDTER.html#evaluacion-1",
+    "href": "MIDTER.html#evaluacion-1",
+    "title": "MIDTERM",
+    "section": "7. Evaluacion",
+    "text": "7. Evaluacion\n\n\nCode\naccuracy = accuracy_score(y_test,y_pred)\nprecision = precision_score(y_test,y_pred)\nrecall = recall_score(y_test,y_pred)\nf1 = f1_score(y_test,y_pred)\n\nprint(f\"accuracy: {accuracy}\")\nprint(f\"precision: {precision}\")\nprint(f\"recall: {recall}\")\nprint(f\"f1: {f1}\")\n\n\naccuracy: 0.8808290155440415\nprecision: 0.8333333333333334\nrecall: 0.5128205128205128\nf1: 0.6349206349206349"
+  },
+  {
+    "objectID": "MIDTER.html#matriz-de-confusión",
+    "href": "MIDTER.html#matriz-de-confusión",
+    "title": "MIDTERM",
+    "section": "8. Matriz de Confusión",
+    "text": "8. Matriz de Confusión\n\n\nCode\nConfusionMatrixDisplay.from_predictions(y_test,y_pred)"
+  },
+  {
+    "objectID": "MIDTER.html#curva-roc",
+    "href": "MIDTER.html#curva-roc",
+    "title": "MIDTERM",
+    "section": "9. Curva ROC",
+    "text": "9. Curva ROC\n\n\nCode\nfrom sklearn.metrics import RocCurveDisplay \nRocCurveDisplay.from_predictions(y_test, y_pred)\nfrom sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, ConfusionMatrixDisplay     \nprint(\"Accuracy:\", accuracy_score(y_test, y_pred))\nprint(\"Precision:\", precision_score(y_test, y_pred))\nprint(\"Recall:\", recall_score(y_test, y_pred))\nprint(\"F1 Score:\", f1_score(y_test, y_pred))\n\n\nAccuracy: 0.8808290155440415\nPrecision: 0.8333333333333334\nRecall: 0.5128205128205128\nF1 Score: 0.6349206349206349"
   }
 ]
