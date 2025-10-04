@@ -146,6 +146,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="./lab.html"> 
 <span class="menu-text">LAB</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./MIDTER.html" aria-current="page"> 
+<span class="menu-text">MIDTER</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -222,7 +226,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="import-libraries" class="level2">
 <h2 class="anchored" data-anchor-id="import-libraries">1. Import libraries</h2>
-<div id="c48678ac" class="cell" data-execution_count="1">
+<div id="94327539" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_breast_cancer</span>
@@ -242,7 +246,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="carga-de-datos" class="level2">
 <h2 class="anchored" data-anchor-id="carga-de-datos">1. Carga de datos</h2>
-<div id="a60f534b" class="cell" data-execution_count="2">
+<div id="19a7ea8b" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_excel(<span class="st">'data regresion.xlsx'</span>)</span>
@@ -422,7 +426,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="variables-independientes-y-variable-objetivo" class="level2">
 <h2 class="anchored" data-anchor-id="variables-independientes-y-variable-objetivo">2. Variables independientes y variable objetivo</h2>
-<div id="5abd2a1a" class="cell" data-execution_count="3">
+<div id="733763ed" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> data[[<span class="st">'TempAir_max ºC'</span>,<span class="st">'HumAir_max ºC'</span>,<span class="st">'TempAir_min ºC'</span>]]</span>
@@ -465,7 +469,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="split-data" class="level2">
 <h2 class="anchored" data-anchor-id="split-data">3. Split data</h2>
-<div id="0cd8bc49" class="cell" data-execution_count="4">
+<div id="a65ab7bd" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
@@ -476,7 +480,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="pipeline" class="level2">
 <h2 class="anchored" data-anchor-id="pipeline">4. Pipeline</h2>
-<div id="0e9071e2" class="cell" data-execution_count="5">
+<div id="2ad86cf0" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pipe <span class="op">=</span> Pipeline([</span>
@@ -488,7 +492,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="train-modelo" class="level2">
 <h2 class="anchored" data-anchor-id="train-modelo">5. Train modelo</h2>
-<div id="e8bdcf6c" class="cell" data-execution_count="6">
+<div id="90da609b" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pipe.fit(X_train,y_train)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1115,7 +1119,7 @@ document.querySelectorAll('.fa-regular.fa-copy').forEach(function(element) {
 </section>
 <section id="test-o-prediction" class="level2">
 <h2 class="anchored" data-anchor-id="test-o-prediction">6. Test o prediction</h2>
-<div id="01336370" class="cell" data-execution_count="7">
+<div id="7703f44e" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>y_pred_pipe <span class="op">=</span> pipe.predict(X_test)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1124,7 +1128,7 @@ document.querySelectorAll('.fa-regular.fa-copy').forEach(function(element) {
 </section>
 <section id="evaluacion" class="level2">
 <h2 class="anchored" data-anchor-id="evaluacion">7. Evaluacion</h2>
-<div id="9624957f" class="cell" data-execution_count="8">
+<div id="4644e765" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluar el modelo</span></span>
@@ -1141,7 +1145,7 @@ R2: 0.7729267679935119</code></pre>
 </section>
 <section id="valores-reales-vs-predichos" class="level2">
 <h2 class="anchored" data-anchor-id="valores-reales-vs-predichos">8. Valores reales vs predichos</h2>
-<div id="3027efce" class="cell" data-execution_count="9">
+<div id="95fdeab8" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -1172,7 +1176,7 @@ R2: 0.7729267679935119</code></pre>
 </section>
 <section id="cargar-data" class="level2">
 <h2 class="anchored" data-anchor-id="cargar-data">1. Cargar Data</h2>
-<div id="a1908883" class="cell" data-execution_count="10">
+<div id="2b19decc" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_excel(<span class="st">'farmacias_con_clusters.xlsx'</span>)</span>
@@ -1329,7 +1333,7 @@ R2: 0.7729267679935119</code></pre>
 </section>
 <section id="variables-independientes-y-variable-objetivo-1" class="level2">
 <h2 class="anchored" data-anchor-id="variables-independientes-y-variable-objetivo-1">2. Variables independientes y variable objetivo</h2>
-<div id="f9b7c6a2" class="cell" data-execution_count="11">
+<div id="1eee1086" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> data[[<span class="st">'venta'</span>,<span class="st">'trx'</span>]]</span>
@@ -1372,9 +1376,9 @@ R2: 0.7729267679935119</code></pre>
 [963 rows x 1 columns]</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>C:\Users\Lenovo i5\AppData\Local\Temp\ipykernel_56940\2158973334.py:4: FutureWarning: Downcasting behavior in `replace` is deprecated and will be removed in a future version. To retain the old behavior, explicitly call `result.infer_objects(copy=False)`. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+<pre><code>C:\Users\Lenovo i5\AppData\Local\Temp\ipykernel_25988\2158973334.py:4: FutureWarning: Downcasting behavior in `replace` is deprecated and will be removed in a future version. To retain the old behavior, explicitly call `result.infer_objects(copy=False)`. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
   y['sucursal'] = y['sucursal'].replace({'ECONOMICAS': 0, 'MEDICITY': 1})
-C:\Users\Lenovo i5\AppData\Local\Temp\ipykernel_56940\2158973334.py:4: SettingWithCopyWarning: 
+C:\Users\Lenovo i5\AppData\Local\Temp\ipykernel_25988\2158973334.py:4: SettingWithCopyWarning: 
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
 
@@ -1385,7 +1389,7 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
 </section>
 <section id="split-data-1" class="level2">
 <h2 class="anchored" data-anchor-id="split-data-1">3. Split data</h2>
-<div id="4e1cb64a" class="cell" data-execution_count="12">
+<div id="c6bba582" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
@@ -1396,7 +1400,7 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
 </section>
 <section id="pipeline-1" class="level2">
 <h2 class="anchored" data-anchor-id="pipeline-1">4. Pipeline</h2>
-<div id="49d09cd6" class="cell" data-execution_count="13">
+<div id="0af96e34" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>pipe <span class="op">=</span> Pipeline([</span>
@@ -1408,7 +1412,7 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
 </section>
 <section id="train-modelo-1" class="level2">
 <h2 class="anchored" data-anchor-id="train-modelo-1">5. Train modelo</h2>
-<div id="2ff1ef9c" class="cell" data-execution_count="14">
+<div id="a4b6d1ba" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>pipe.fit(X_train,y_train)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2090,7 +2094,7 @@ document.querySelectorAll('.fa-regular.fa-copy').forEach(function(element) {
 </section>
 <section id="predict" class="level2">
 <h2 class="anchored" data-anchor-id="predict">6. Predict</h2>
-<div id="934810a6" class="cell" data-execution_count="15">
+<div id="c431b5e4" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> pipe.predict(X_test)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2099,7 +2103,7 @@ document.querySelectorAll('.fa-regular.fa-copy').forEach(function(element) {
 </section>
 <section id="evaluacion-1" class="level2">
 <h2 class="anchored" data-anchor-id="evaluacion-1">7. Evaluacion</h2>
-<div id="894b8491" class="cell" data-execution_count="16">
+<div id="0c5ff3d1" class="cell" data-execution_count="16">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>accuracy <span class="op">=</span> accuracy_score(y_test,y_pred)</span>
@@ -2122,7 +2126,7 @@ f1: 0.6349206349206349</code></pre>
 </section>
 <section id="matriz-de-confusión" class="level2">
 <h2 class="anchored" data-anchor-id="matriz-de-confusión">8. Matriz de Confusión</h2>
-<div id="d564ea61" class="cell" data-execution_count="17">
+<div id="59be62d1" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>ConfusionMatrixDisplay.from_predictions(y_test,y_pred)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2138,7 +2142,7 @@ f1: 0.6349206349206349</code></pre>
 </section>
 <section id="curva-roc" class="level2">
 <h2 class="anchored" data-anchor-id="curva-roc">9. Curva ROC</h2>
-<div id="291224ec" class="cell" data-execution_count="18">
+<div id="f9151dd8" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> RocCurveDisplay </span>
