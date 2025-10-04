@@ -10,8 +10,6 @@ website:
         text: Home
       - href: eda.qmd
         text: EDA
-      - href: lab.qmd
-        text: LAB1
       - href: MIDTER.qmd
         text: MIDTER
 
