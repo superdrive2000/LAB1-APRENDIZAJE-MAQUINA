@@ -107,10 +107,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
-
-
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
-
 
 
 </head>
@@ -222,7 +219,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="import-libraries" class="level2">
 <h2 class="anchored" data-anchor-id="import-libraries">1. Import libraries</h2>
-<div id="1361846b" class="cell" data-execution_count="1">
+<div id="48fc7c62" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_breast_cancer</span>
@@ -238,11 +235,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="problema-regresion" class="level2">
 <h2 class="anchored" data-anchor-id="problema-regresion">PROBLEMA REGRESION</h2>
-<p>Predicción Termocuple_min(24) en datos de eficiencia energetca de vivienda</p>
+<p>Predicción de ‘HumAir_min ºC’ en funcion de las variables ‘TempAir_max ºC’,‘HumAir_max ºC’,‘TempAir_min ºC’ en datos de eficiencia energetca de vivienda</p>
 </section>
 <section id="carga-de-datos" class="level2">
 <h2 class="anchored" data-anchor-id="carga-de-datos">1. Carga de datos</h2>
-<div id="1bae82ac" class="cell" data-execution_count="2">
+<div id="c727d0b2" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_excel(<span class="st">'data regresion.xlsx'</span>)</span>
@@ -419,10 +416,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
+<p>El dataset cuenta con 10 columnas y 204 samples. Sin embargo para el ejercicio se seleccionara 3 variabes predictoras: ‘TempAir_max ºC’,‘HumAir_max ºC’,’TempAir_min ºC y se intentará predecir al valor de HumAir_min ºC.</p>
 </section>
 <section id="variables-independientes-y-variable-objetivo" class="level2">
 <h2 class="anchored" data-anchor-id="variables-independientes-y-variable-objetivo">2. Variables independientes y variable objetivo</h2>
-<div id="2a12a274" class="cell" data-execution_count="3">
+<div id="7240e835" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> data[[<span class="st">'TempAir_max ºC'</span>,<span class="st">'HumAir_max ºC'</span>,<span class="st">'TempAir_min ºC'</span>]]</span>
@@ -465,7 +463,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="split-data" class="level2">
 <h2 class="anchored" data-anchor-id="split-data">3. Split data</h2>
-<div id="33b3a627" class="cell" data-execution_count="4">
+<p>Como no es un problema de classificación, no usamos el argumento stratify.</p>
+<div id="1662810d" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
@@ -476,7 +475,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="pipeline" class="level2">
 <h2 class="anchored" data-anchor-id="pipeline">4. Pipeline</h2>
-<div id="6f76fce4" class="cell" data-execution_count="5">
+<p>Se uso un modelo de regresión lineal</p>
+<div id="38aa813f" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pipe <span class="op">=</span> Pipeline([</span>
@@ -488,7 +488,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="train-modelo" class="level2">
 <h2 class="anchored" data-anchor-id="train-modelo">5. Train modelo</h2>
-<div id="02619684" class="cell" data-execution_count="6">
+<div id="4ce7da5d" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pipe.fit(X_train,y_train)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1115,7 +1115,7 @@ document.querySelectorAll('.fa-regular.fa-copy').forEach(function(element) {
 </section>
 <section id="test-o-prediction" class="level2">
 <h2 class="anchored" data-anchor-id="test-o-prediction">6. Test o prediction</h2>
-<div id="852b79be" class="cell" data-execution_count="7">
+<div id="3dfd3907" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>y_pred_pipe <span class="op">=</span> pipe.predict(X_test)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1124,7 +1124,7 @@ document.querySelectorAll('.fa-regular.fa-copy').forEach(function(element) {
 </section>
 <section id="evaluacion" class="level2">
 <h2 class="anchored" data-anchor-id="evaluacion">7. Evaluacion</h2>
-<div id="7d550f4c" class="cell" data-execution_count="8">
+<div id="1254cf59" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluar el modelo</span></span>
@@ -1138,10 +1138,11 @@ document.querySelectorAll('.fa-regular.fa-copy').forEach(function(element) {
 R2: 0.7729267679935119</code></pre>
 </div>
 </div>
+<p>El modelo de regresión lineal tiene un buen nivel de ajuste: explica gran parte de la variabilidad de la humedad mínima del aire ya que el el 77% de la variabilidad de HumAir_min ºC se explica a partir de las variables predictoras (TempAir_max, HumAir_max y TempAir_min). Por otro lado, el modelo comete un error al cuadrado de 28.84 unidades de la variable dependiente (HumAir_min ºC).</p>
 </section>
 <section id="valores-reales-vs-predichos" class="level2">
 <h2 class="anchored" data-anchor-id="valores-reales-vs-predichos">8. Valores reales vs predichos</h2>
-<div id="e24faacf" class="cell" data-execution_count="9">
+<div id="96cddb72" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -1160,19 +1161,24 @@ R2: 0.7729267679935119</code></pre>
 </div>
 </div>
 </div>
+<p>El gráfico tambien muestra un buen nivel de ajuste entre los valores predichos y los valores reales.</p>
 </section>
 <section id="curva-de-aprendizaje" class="level2">
 <h2 class="anchored" data-anchor-id="curva-de-aprendizaje">9. Curva de aprendizaje</h2>
 <p>from sklearn.model_selection import learning_curve train_sizes, train_scores, test_scores = learning_curve( pipe, X, y, cv=5, n_jobs=-1, train_sizes=[0.1, 0.33, 0.55, 0.78, 1.0], scoring=‘r2’ ) import numpy as np train_scores_mean = np.mean(train_scores, axis=1) test_scores_mean = np.mean(test_scores, axis=1) plt.plot(train_sizes, train_scores_mean, ‘o-’, color=“r”, label=“Training score”) plt.plot(train_sizes, test_scores_mean, ‘o-’, color=“g”, label=“Cross-validation score”) plt.xlabel(“Training examples”) plt.ylabel(“Score”) plt.title(“Learning Curve”) plt.legend(loc=“best”) plt.show()</p>
 <p><img src="learning curve.png" class="img-fluid"></p>
+<p>Al analizar la curva de aprendizaje notamos un overfitting ya que la curva roja de score de entrenamiento se mantiene alta y casi constante, mientras que la curva verde de score de validación cruzada comienza muy baja y mejora con más datos, pero nunca alcanza el nivel del entrenamiento.</p>
+<p>Este overfitting puede deberse a que el dataset solo cuenta con 204 samples. Por lo que añadir mas samples es calve para reducri el sobreajuste. Esto se evidencia en el compprtamiento que tiene la curva verde, crece muy rapido al principio y leugo se estabiliza. Seria interante ver el compotamiento con un dataset mas extenso.</p>
 </section>
 <section id="problema-clasificacion" class="level2">
 <h2 class="anchored" data-anchor-id="problema-clasificacion">PROBLEMA CLASIFICACION</h2>
-<p>Predecir el sector publico/privado de un dataset de pago de bono de desempleo</p>
+<p>Se exploró la base de datos de Datos Abiertos Ecuador de Pago de Bonos de desemple y se realizó un primer experimento. Sin embargo, se obtuvieron resutados muy bajos en terminos de metricas y decidio usar una base datos propia.</p>
+<p>Se seleccion una base de datos de mi trabajo actual. Trabajo para Farmcias Económicas y Medicity estos dos sucursales estan enfocadas en publicos objetivo diferentes. Medicity esta enfocada en un segmento más premium de clientes con mayor poder adquisitivo lo que implica mayor venta con menos transacciones. Por lo que decidi usar la venta y transacciones mensuales para predecir si un PDV es Economica o Medicity.</p>
 </section>
 <section id="cargar-data" class="level2">
 <h2 class="anchored" data-anchor-id="cargar-data">1. Cargar Data</h2>
-<div id="5ff9f304" class="cell" data-execution_count="10">
+<p>Información correspondiente a agosto 2025 de nuestos PDV a nivel nacional</p>
+<div id="42b091d1" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_excel(<span class="st">'farmacias_con_clusters.xlsx'</span>)</span>
@@ -1329,7 +1335,7 @@ R2: 0.7729267679935119</code></pre>
 </section>
 <section id="variables-independientes-y-variable-objetivo-1" class="level2">
 <h2 class="anchored" data-anchor-id="variables-independientes-y-variable-objetivo-1">2. Variables independientes y variable objetivo</h2>
-<div id="b8854815" class="cell" data-execution_count="11">
+<div id="1cf74efe" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> data[[<span class="st">'venta'</span>,<span class="st">'trx'</span>]]</span>
@@ -1372,9 +1378,9 @@ R2: 0.7729267679935119</code></pre>
 [963 rows x 1 columns]</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>C:\Users\Lenovo i5\AppData\Local\Temp\ipykernel_80060\2158973334.py:4: FutureWarning: Downcasting behavior in `replace` is deprecated and will be removed in a future version. To retain the old behavior, explicitly call `result.infer_objects(copy=False)`. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+<pre><code>C:\Users\Lenovo i5\AppData\Local\Temp\ipykernel_36112\2158973334.py:4: FutureWarning: Downcasting behavior in `replace` is deprecated and will be removed in a future version. To retain the old behavior, explicitly call `result.infer_objects(copy=False)`. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
   y['sucursal'] = y['sucursal'].replace({'ECONOMICAS': 0, 'MEDICITY': 1})
-C:\Users\Lenovo i5\AppData\Local\Temp\ipykernel_80060\2158973334.py:4: SettingWithCopyWarning: 
+C:\Users\Lenovo i5\AppData\Local\Temp\ipykernel_36112\2158973334.py:4: SettingWithCopyWarning: 
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
 
@@ -1382,10 +1388,11 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
   y['sucursal'] = y['sucursal'].replace({'ECONOMICAS': 0, 'MEDICITY': 1})</code></pre>
 </div>
 </div>
+<p>Se uso la variable de venta y transacciones como variables predictora y la la sucursal como variable objetivo. Se hizo un mapeo manual para convertir esta data en numerica ‘ECONOMICAS’: 0, ‘MEDICITY’: 1</p>
 </section>
 <section id="split-data-1" class="level2">
 <h2 class="anchored" data-anchor-id="split-data-1">3. Split data</h2>
-<div id="2eae455c" class="cell" data-execution_count="12">
+<div id="4008719d" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
@@ -1396,7 +1403,8 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
 </section>
 <section id="pipeline-1" class="level2">
 <h2 class="anchored" data-anchor-id="pipeline-1">4. Pipeline</h2>
-<div id="7bb22402" class="cell" data-execution_count="13">
+<p>Se usó un modelo de regresión logistica</p>
+<div id="2a558fc0" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>pipe <span class="op">=</span> Pipeline([</span>
@@ -1408,7 +1416,7 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
 </section>
 <section id="train-modelo-1" class="level2">
 <h2 class="anchored" data-anchor-id="train-modelo-1">5. Train modelo</h2>
-<div id="b2bab5bd" class="cell" data-execution_count="14">
+<div id="146df3ce" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>pipe.fit(X_train,y_train)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2090,7 +2098,7 @@ document.querySelectorAll('.fa-regular.fa-copy').forEach(function(element) {
 </section>
 <section id="predict" class="level2">
 <h2 class="anchored" data-anchor-id="predict">6. Predict</h2>
-<div id="66bf63a3" class="cell" data-execution_count="15">
+<div id="d7971fd1" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> pipe.predict(X_test)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2099,7 +2107,7 @@ document.querySelectorAll('.fa-regular.fa-copy').forEach(function(element) {
 </section>
 <section id="evaluacion-1" class="level2">
 <h2 class="anchored" data-anchor-id="evaluacion-1">7. Evaluacion</h2>
-<div id="c318de05" class="cell" data-execution_count="16">
+<div id="de0bd016" class="cell" data-execution_count="16">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>accuracy <span class="op">=</span> accuracy_score(y_test,y_pred)</span>
@@ -2119,10 +2127,14 @@ recall: 0.5128205128205128
 f1: 0.6349206349206349</code></pre>
 </div>
 </div>
+<p>En base al accuracy, el modelo predice corrctamente el 88% de las veces. Es muy alto, pero tengo un desvalance de clases ya que tengo 194 MEDICITY vs 769 ECONOMICAS</p>
+<p>En base a la precision, todas las veces que el modelo predijo MEDICITY, acertó el 83%. Es decir, pocas falsas alarmas.</p>
+<p>En base al recall, de todas las sucursales realmente MEDICITY, el modelo solo detectó el 51%. Se le escapan casi la mitad.</p>
+<p>En base al f1, el modelo es moderado, lo que indica que hay margen de mejora en la detección de sucursales MEDICITY.</p>
 </section>
 <section id="matriz-de-confusión" class="level2">
 <h2 class="anchored" data-anchor-id="matriz-de-confusión">8. Matriz de Confusión</h2>
-<div id="890580f4" class="cell" data-execution_count="17">
+<div id="af2bfb2d" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>ConfusionMatrixDisplay.from_predictions(y_test,y_pred)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2135,10 +2147,11 @@ f1: 0.6349206349206349</code></pre>
 </div>
 </div>
 </div>
+<p>En la grefica se puede observar visualmente lo discutido en el apartado anterior. Adicinalmente la sobre la diaginal principal se observan los numero más grandes.</p>
 </section>
 <section id="curva-roc" class="level2">
 <h2 class="anchored" data-anchor-id="curva-roc">9. Curva ROC</h2>
-<div id="cc4b270a" class="cell" data-execution_count="18">
+<div id="6aa44a1e" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> RocCurveDisplay </span>
@@ -2163,6 +2176,7 @@ F1 Score: 0.6349206349206349</code></pre>
 </div>
 </div>
 </div>
+<p>De la curva ROC se obtiene un AUC = 0.74 lo que indica que el modelo tiene una capacidad razonable para distinguir entre sucursales ECONOMICA y MEDICITY.</p>
 
 
 </section>

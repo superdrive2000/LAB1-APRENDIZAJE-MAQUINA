@@ -29,7 +29,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 ## PROBLEMA REGRESION
 
-Predicción Termocuple_min(24) en datos de eficiencia energetca de vivienda
+Predicción  de 'HumAir_min ºC' en funcion de las variables 'TempAir_max ºC','HumAir_max ºC','TempAir_min ºC' en datos de eficiencia energetca de vivienda
 
 ## 1. Carga de datos
 ```{python}
@@ -38,6 +38,7 @@ data = pd.read_excel('data regresion.xlsx')
 data
 
 ```
+El dataset cuenta con 10 columnas y 204 samples. Sin embargo para el ejercicio se seleccionara 3 variabes predictoras: 'TempAir_max ºC','HumAir_max ºC','TempAir_min ºC y se intentará predecir al valor de HumAir_min ºC.
 
 ## 2. Variables independientes y variable objetivo
 
@@ -50,7 +51,7 @@ print(y)
 ```
 
 ## 3. Split data
-
+Como no es un problema de classificación, no usamos el argumento stratify.
 ```{python}
 
 X_train, X_test, y_train, y_test = train_test_split(
@@ -59,7 +60,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 ```
 
 ## 4. Pipeline
-
+Se uso un modelo de regresión lineal
 ```{python}
 
 pipe = Pipeline([
@@ -92,6 +93,7 @@ print("MSE:", mse)
 print("R2:", r2)
 
 ```
+El modelo de regresión lineal tiene un buen nivel de ajuste: explica gran parte de la variabilidad de la humedad mínima del aire ya que el el 77% de la variabilidad de HumAir_min ºC se explica a partir de las variables predictoras (TempAir_max, HumAir_max y TempAir_min). Por otro lado, el modelo comete un error al cuadrado de 28.84 unidades de la variable dependiente (HumAir_min ºC).
 
 ## 8. Valores reales vs predichos
 
@@ -105,6 +107,8 @@ plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=2
 plt.show()
 
 ```
+
+El gráfico tambien muestra un buen nivel de ajuste entre los valores predichos y los valores reales.
 
 ## 9. Curva de aprendizaje
 
@@ -130,7 +134,9 @@ plt.show()
 ![](learning curve.png)
 
 
+Al analizar la curva de aprendizaje notamos un overfitting ya que la curva roja de score de entrenamiento se mantiene alta y casi constante, mientras que la curva verde de score de validación cruzada comienza muy baja y mejora con más datos, pero nunca alcanza el nivel del entrenamiento. 
 
+Este overfitting puede deberse a que el dataset solo cuenta con 204 samples. Por lo que añadir mas samples es calve para reducri el sobreajuste. Esto se evidencia en el compprtamiento que tiene la curva verde, crece muy rapido al principio y leugo se estabiliza. Seria interante ver el compotamiento con un dataset mas extenso.
 
 
 
@@ -144,11 +150,15 @@ plt.show()
 
 ## PROBLEMA CLASIFICACION
 
-Predecir el sector publico/privado de un dataset de pago de bono de desempleo
+Se exploró la base de datos de Datos Abiertos Ecuador de Pago de Bonos de desemple y se realizó un primer experimento. Sin embargo, se obtuvieron resutados muy bajos en terminos de metricas y decidio usar una base datos propia.
+
+Se seleccion una base de datos de mi trabajo actual. Trabajo para  Farmcias Económicas y Medicity estos dos sucursales estan enfocadas en publicos objetivo diferentes. Medicity esta enfocada en un segmento más premium de clientes con mayor poder adquisitivo lo que implica mayor venta con menos transacciones. Por lo que decidi usar la venta y transacciones mensuales para predecir si un PDV es Economica o Medicity.
 
 ## 1. Cargar Data
-```{python}
 
+Información correspondiente a agosto 2025 de nuestos PDV a nivel nacional
+
+```{python}
 data = pd.read_excel('farmacias_con_clusters.xlsx')
 data = data.dropna()
 data
@@ -168,6 +178,9 @@ print(X)
 print(y)
 ```
 
+Se uso la variable de venta y transacciones como variables predictora y la la sucursal como variable objetivo. Se hizo un mapeo manual para convertir esta data en numerica 'ECONOMICAS': 0, 'MEDICITY': 1
+
+
 ## 3. Split data
 
 ```{python}
@@ -178,6 +191,8 @@ X_train, X_test, y_train, y_test = train_test_split(
 ```
 
 ## 4. Pipeline
+
+Se usó un modelo de regresión logistica
 
 ```{python}
 
@@ -217,6 +232,15 @@ print(f"f1: {f1}")
 
 ```
 
+En base al accuracy, el modelo predice corrctamente el 88% de las veces. Es muy alto, pero tengo un desvalance de clases ya que tengo 194 MEDICITY vs 769 ECONOMICAS
+
+En base a la precision, todas las veces que el modelo predijo MEDICITY, acertó el 83%. Es decir, pocas falsas alarmas.
+
+En base al recall, de todas las sucursales realmente MEDICITY, el modelo solo detectó el 51%. Se le escapan casi la mitad.
+
+En base al f1, el modelo es moderado, lo que indica que hay margen de mejora en la detección de sucursales MEDICITY.
+
+
 ## 8. Matriz de Confusión
 
 
@@ -224,6 +248,8 @@ print(f"f1: {f1}")
 ```{python}
 ConfusionMatrixDisplay.from_predictions(y_test,y_pred)
 ```
+
+En la grefica se puede observar visualmente lo discutido en el apartado anterior. Adicinalmente la sobre la diaginal principal se observan los numero más grandes.
 
 ## 9. Curva ROC
 
@@ -237,3 +263,5 @@ print("Precision:", precision_score(y_test, y_pred))
 print("Recall:", recall_score(y_test, y_pred))
 print("F1 Score:", f1_score(y_test, y_pred))
 ```
+
+De la curva ROC se obtiene un AUC = 0.74 lo que indica que el modelo tiene una capacidad razonable para distinguir entre sucursales ECONOMICA y MEDICITY.

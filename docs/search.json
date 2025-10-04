@@ -256,7 +256,7 @@
     "href": "MIDTER.html#problema-regresion",
     "title": "MIDTERM",
     "section": "PROBLEMA REGRESION",
-    "text": "PROBLEMA REGRESION\nPredicción Termocuple_min(24) en datos de eficiencia energetca de vivienda"
+    "text": "PROBLEMA REGRESION\nPredicción de ‘HumAir_min ºC’ en funcion de las variables ‘TempAir_max ºC’,‘HumAir_max ºC’,‘TempAir_min ºC’ en datos de eficiencia energetca de vivienda"
   },
   {
     "objectID": "MIDTER.html#problema-calisficacion",
@@ -284,28 +284,28 @@
     "href": "MIDTER.html#problema-clasificacion",
     "title": "MIDTERM",
     "section": "PROBLEMA CLASIFICACION",
-    "text": "PROBLEMA CLASIFICACION\nPredecir el sector publico/privado de un dataset de pago de bono de desempleo"
+    "text": "PROBLEMA CLASIFICACION\nSe exploró la base de datos de Datos Abiertos Ecuador de Pago de Bonos de desemple y se realizó un primer experimento. Sin embargo, se obtuvieron resutados muy bajos en terminos de metricas y decidio usar una base datos propia.\nSe seleccion una base de datos de mi trabajo actual. Trabajo para Farmcias Económicas y Medicity estos dos sucursales estan enfocadas en publicos objetivo diferentes. Medicity esta enfocada en un segmento más premium de clientes con mayor poder adquisitivo lo que implica mayor venta con menos transacciones. Por lo que decidi usar la venta y transacciones mensuales para predecir si un PDV es Economica o Medicity."
   },
   {
     "objectID": "MIDTER.html#carga-de-datos",
     "href": "MIDTER.html#carga-de-datos",
     "title": "MIDTERM",
     "section": "1. Carga de datos",
-    "text": "1. Carga de datos\n\n\nCode\ndata = pd.read_excel('data regresion.xlsx')\ndata\n\n\n\n\n\n\n\n\n\nFecha - date\nTempAir_Avg\\nºC\nHumAir_Avg %\nTermocuple_Avg(24) ºC\nTempAir_max ºC\nHumAir_max ºC\nTermocuple_max(24) ºC\nTempAir_min ºC\nHumAir_min ºC\nTermocuple_min(24)\n\n\n\n\n0\n2022-05-11\n18.131765\n85.298676\n27.136471\n22.43\n92.1\n27.91\n15.90\n68.90\n25.88\n\n\n1\n2022-05-12\n19.732662\n70.696883\n24.767987\n23.85\n93.0\n26.87\n14.45\n51.35\n19.86\n\n\n2\n2022-05-13\n19.923765\n73.838519\n24.948519\n24.16\n92.3\n27.43\n14.86\n55.23\n17.80\n\n\n3\n2022-05-14\n18.581579\n82.738947\n24.538355\n22.63\n93.1\n26.40\n14.58\n65.61\n19.45\n\n\n4\n2022-05-15\n20.484815\n75.320000\n25.934012\n24.82\n92.8\n28.84\n14.69\n51.53\n18.65\n\n\n...\n...\n...\n...\n...\n...\n...\n...\n...\n...\n...\n\n\n199\n2022-11-26\n19.632914\n69.829735\n25.949073\n24.06\n92.1\n28.87\n13.82\n48.51\n18.21\n\n\n200\n2022-11-27\n19.131071\n73.641643\n25.606643\n23.18\n91.9\n28.40\n14.45\n55.52\n18.73\n\n\n201\n2022-11-28\n17.565274\n83.274863\n24.372534\n22.00\n92.5\n26.40\n14.04\n68.68\n18.68\n\n\n202\n2022-11-29\n18.733377\n73.794834\n24.994305\n22.18\n93.4\n28.08\n12.77\n52.13\n17.41\n\n\n203\n2022-11-30\n20.230169\n64.898814\n22.590847\n23.51\n92.5\n25.36\n13.66\n50.88\n18.56\n\n\n\n\n204 rows × 10 columns"
+    "text": "1. Carga de datos\n\n\nCode\ndata = pd.read_excel('data regresion.xlsx')\ndata\n\n\n\n\n\n\n\n\n\nFecha - date\nTempAir_Avg\\nºC\nHumAir_Avg %\nTermocuple_Avg(24) ºC\nTempAir_max ºC\nHumAir_max ºC\nTermocuple_max(24) ºC\nTempAir_min ºC\nHumAir_min ºC\nTermocuple_min(24)\n\n\n\n\n0\n2022-05-11\n18.131765\n85.298676\n27.136471\n22.43\n92.1\n27.91\n15.90\n68.90\n25.88\n\n\n1\n2022-05-12\n19.732662\n70.696883\n24.767987\n23.85\n93.0\n26.87\n14.45\n51.35\n19.86\n\n\n2\n2022-05-13\n19.923765\n73.838519\n24.948519\n24.16\n92.3\n27.43\n14.86\n55.23\n17.80\n\n\n3\n2022-05-14\n18.581579\n82.738947\n24.538355\n22.63\n93.1\n26.40\n14.58\n65.61\n19.45\n\n\n4\n2022-05-15\n20.484815\n75.320000\n25.934012\n24.82\n92.8\n28.84\n14.69\n51.53\n18.65\n\n\n...\n...\n...\n...\n...\n...\n...\n...\n...\n...\n...\n\n\n199\n2022-11-26\n19.632914\n69.829735\n25.949073\n24.06\n92.1\n28.87\n13.82\n48.51\n18.21\n\n\n200\n2022-11-27\n19.131071\n73.641643\n25.606643\n23.18\n91.9\n28.40\n14.45\n55.52\n18.73\n\n\n201\n2022-11-28\n17.565274\n83.274863\n24.372534\n22.00\n92.5\n26.40\n14.04\n68.68\n18.68\n\n\n202\n2022-11-29\n18.733377\n73.794834\n24.994305\n22.18\n93.4\n28.08\n12.77\n52.13\n17.41\n\n\n203\n2022-11-30\n20.230169\n64.898814\n22.590847\n23.51\n92.5\n25.36\n13.66\n50.88\n18.56\n\n\n\n\n204 rows × 10 columns\n\n\n\nEl dataset cuenta con 10 columnas y 204 samples. Sin embargo para el ejercicio se seleccionara 3 variabes predictoras: ‘TempAir_max ºC’,‘HumAir_max ºC’,’TempAir_min ºC y se intentará predecir al valor de HumAir_min ºC."
   },
   {
     "objectID": "MIDTER.html#split-data",
     "href": "MIDTER.html#split-data",
     "title": "MIDTERM",
     "section": "3. Split data",
-    "text": "3. Split data\n\n\nCode\nX_train, X_test, y_train, y_test = train_test_split(\n    X,y,test_size=0.2,random_state=42\n)"
+    "text": "3. Split data\nComo no es un problema de classificación, no usamos el argumento stratify.\n\n\nCode\nX_train, X_test, y_train, y_test = train_test_split(\n    X,y,test_size=0.2,random_state=42\n)"
   },
   {
     "objectID": "MIDTER.html#pipeline",
     "href": "MIDTER.html#pipeline",
     "title": "MIDTERM",
     "section": "4. Pipeline",
-    "text": "4. Pipeline\n\n\nCode\npipe = Pipeline([\n    (\"escalado\",StandardScaler()),\n    (\"logreg\",LinearRegression())\n])"
+    "text": "4. Pipeline\nSe uso un modelo de regresión lineal\n\n\nCode\npipe = Pipeline([\n    (\"escalado\",StandardScaler()),\n    (\"logreg\",LinearRegression())\n])"
   },
   {
     "objectID": "MIDTER.html#train-modelo",
@@ -326,35 +326,35 @@
     "href": "MIDTER.html#evaluacion",
     "title": "MIDTERM",
     "section": "7. Evaluacion",
-    "text": "7. Evaluacion\n\n\nCode\n# Evaluar el modelo\nmse = mean_squared_error(y_test, y_pred_pipe)\nr2 = r2_score(y_test, y_pred_pipe)\nprint(\"MSE:\", mse)\nprint(\"R2:\", r2)\n\n\nMSE: 28.83933122330356\nR2: 0.7729267679935119"
+    "text": "7. Evaluacion\n\n\nCode\n# Evaluar el modelo\nmse = mean_squared_error(y_test, y_pred_pipe)\nr2 = r2_score(y_test, y_pred_pipe)\nprint(\"MSE:\", mse)\nprint(\"R2:\", r2)\n\n\nMSE: 28.83933122330356\nR2: 0.7729267679935119\n\n\nEl modelo de regresión lineal tiene un buen nivel de ajuste: explica gran parte de la variabilidad de la humedad mínima del aire ya que el el 77% de la variabilidad de HumAir_min ºC se explica a partir de las variables predictoras (TempAir_max, HumAir_max y TempAir_min). Por otro lado, el modelo comete un error al cuadrado de 28.84 unidades de la variable dependiente (HumAir_min ºC)."
   },
   {
     "objectID": "MIDTER.html#valores-reales-vs-predichos",
     "href": "MIDTER.html#valores-reales-vs-predichos",
     "title": "MIDTERM",
     "section": "8. Valores reales vs predichos",
-    "text": "8. Valores reales vs predichos\n\n\nCode\nimport matplotlib.pyplot as plt\nplt.scatter(y_test, y_pred_pipe)\nplt.xlabel(\"Valores Reales (y_test)\")\nplt.ylabel(\"Valores Predichos (y_pred_pipe)\")\nplt.title(\"Gráfico de Dispersión: Valores Reales vs Predichos\")\nplt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=2)\nplt.show()"
+    "text": "8. Valores reales vs predichos\n\n\nCode\nimport matplotlib.pyplot as plt\nplt.scatter(y_test, y_pred_pipe)\nplt.xlabel(\"Valores Reales (y_test)\")\nplt.ylabel(\"Valores Predichos (y_pred_pipe)\")\nplt.title(\"Gráfico de Dispersión: Valores Reales vs Predichos\")\nplt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=2)\nplt.show()\n\n\n\n\n\n\n\n\n\nEl gráfico tambien muestra un buen nivel de ajuste entre los valores predichos y los valores reales."
   },
   {
     "objectID": "MIDTER.html#curva-de-aprendizaje",
     "href": "MIDTER.html#curva-de-aprendizaje",
     "title": "MIDTERM",
     "section": "9. Curva de aprendizaje",
-    "text": "9. Curva de aprendizaje\nfrom sklearn.model_selection import learning_curve train_sizes, train_scores, test_scores = learning_curve( pipe, X, y, cv=5, n_jobs=-1, train_sizes=[0.1, 0.33, 0.55, 0.78, 1.0], scoring=‘r2’ ) import numpy as np train_scores_mean = np.mean(train_scores, axis=1) test_scores_mean = np.mean(test_scores, axis=1) plt.plot(train_sizes, train_scores_mean, ‘o-’, color=“r”, label=“Training score”) plt.plot(train_sizes, test_scores_mean, ‘o-’, color=“g”, label=“Cross-validation score”) plt.xlabel(“Training examples”) plt.ylabel(“Score”) plt.title(“Learning Curve”) plt.legend(loc=“best”) plt.show()"
+    "text": "9. Curva de aprendizaje\nfrom sklearn.model_selection import learning_curve train_sizes, train_scores, test_scores = learning_curve( pipe, X, y, cv=5, n_jobs=-1, train_sizes=[0.1, 0.33, 0.55, 0.78, 1.0], scoring=‘r2’ ) import numpy as np train_scores_mean = np.mean(train_scores, axis=1) test_scores_mean = np.mean(test_scores, axis=1) plt.plot(train_sizes, train_scores_mean, ‘o-’, color=“r”, label=“Training score”) plt.plot(train_sizes, test_scores_mean, ‘o-’, color=“g”, label=“Cross-validation score”) plt.xlabel(“Training examples”) plt.ylabel(“Score”) plt.title(“Learning Curve”) plt.legend(loc=“best”) plt.show()\n\nAl analizar la curva de aprendizaje notamos un overfitting ya que la curva roja de score de entrenamiento se mantiene alta y casi constante, mientras que la curva verde de score de validación cruzada comienza muy baja y mejora con más datos, pero nunca alcanza el nivel del entrenamiento.\nEste overfitting puede deberse a que el dataset solo cuenta con 204 samples. Por lo que añadir mas samples es calve para reducri el sobreajuste. Esto se evidencia en el compprtamiento que tiene la curva verde, crece muy rapido al principio y leugo se estabiliza. Seria interante ver el compotamiento con un dataset mas extenso."
   },
   {
     "objectID": "MIDTER.html#cargar-data",
     "href": "MIDTER.html#cargar-data",
     "title": "MIDTERM",
     "section": "1. Cargar Data",
-    "text": "1. Cargar Data\n\n\nCode\ndata = pd.read_excel('farmacias_con_clusters.xlsx')\ndata = data.dropna()\ndata\n\n\n\n\n\n\n\n\n\nfarmacia\ntipofarmacia\nventa\ntrx\nnomina\nsucursal\ncluster\nperfil\n\n\n\n\n0\nECO QUITO SAN JOSE DE MINAS\nFRANQUICIA\n29341.6987\n2991\n2\nECONOMICAS\n0\n44\n\n\n1\nECO MODERNA\nFRANQUICIA\n61003.9857\n5700\n4\nECONOMICAS\n0\n46\n\n\n2\nECO OTAVALO 31 DE OCTUBRE\nFRANQUICIA\n37030.7980\n5984\n3\nECONOMICAS\n0\n46\n\n\n3\nECO OTAVALO COPACABANA\nFRANQUICIA\n47367.4135\n6742\n4\nECONOMICAS\n0\n47\n\n\n4\nECO CRUZ ROJA OTAVALO\nFRANQUICIA\n63026.8760\n6949\n4\nECONOMICAS\n0\n48\n\n\n...\n...\n...\n...\n...\n...\n...\n...\n...\n\n\n958\nECO QUITO CIUDAD FUTURA\nFRANQUICIA\n32064.8565\n4928\n2\nECONOMICAS\n99\n51\n\n\n959\nECO CHILLOGALLO\nFRANQUICIA\n25195.3154\n3007\n2\nECONOMICAS\n99\n52\n\n\n960\nECO QUITO LUCHA MEDIA\nFRANQUICIA\n16635.9057\n1856\n1\nECONOMICAS\n99\n52\n\n\n961\nECO QUITO TAMBILLO\nFRANQUICIA\n47009.0518\n5961\n3\nECONOMICAS\n99\n52\n\n\n962\nECO QUITUMBE REINA DEL CISNE\nFRANQUICIA\n35663.2024\n2976\n2\nECONOMICAS\n99\n52\n\n\n\n\n963 rows × 8 columns"
+    "text": "1. Cargar Data\nInformación correspondiente a agosto 2025 de nuestos PDV a nivel nacional\n\n\nCode\ndata = pd.read_excel('farmacias_con_clusters.xlsx')\ndata = data.dropna()\ndata\n\n\n\n\n\n\n\n\n\nfarmacia\ntipofarmacia\nventa\ntrx\nnomina\nsucursal\ncluster\nperfil\n\n\n\n\n0\nECO QUITO SAN JOSE DE MINAS\nFRANQUICIA\n29341.6987\n2991\n2\nECONOMICAS\n0\n44\n\n\n1\nECO MODERNA\nFRANQUICIA\n61003.9857\n5700\n4\nECONOMICAS\n0\n46\n\n\n2\nECO OTAVALO 31 DE OCTUBRE\nFRANQUICIA\n37030.7980\n5984\n3\nECONOMICAS\n0\n46\n\n\n3\nECO OTAVALO COPACABANA\nFRANQUICIA\n47367.4135\n6742\n4\nECONOMICAS\n0\n47\n\n\n4\nECO CRUZ ROJA OTAVALO\nFRANQUICIA\n63026.8760\n6949\n4\nECONOMICAS\n0\n48\n\n\n...\n...\n...\n...\n...\n...\n...\n...\n...\n\n\n958\nECO QUITO CIUDAD FUTURA\nFRANQUICIA\n32064.8565\n4928\n2\nECONOMICAS\n99\n51\n\n\n959\nECO CHILLOGALLO\nFRANQUICIA\n25195.3154\n3007\n2\nECONOMICAS\n99\n52\n\n\n960\nECO QUITO LUCHA MEDIA\nFRANQUICIA\n16635.9057\n1856\n1\nECONOMICAS\n99\n52\n\n\n961\nECO QUITO TAMBILLO\nFRANQUICIA\n47009.0518\n5961\n3\nECONOMICAS\n99\n52\n\n\n962\nECO QUITUMBE REINA DEL CISNE\nFRANQUICIA\n35663.2024\n2976\n2\nECONOMICAS\n99\n52\n\n\n\n\n963 rows × 8 columns"
   },
   {
     "objectID": "MIDTER.html#variables-independientes-y-variable-objetivo-1",
     "href": "MIDTER.html#variables-independientes-y-variable-objetivo-1",
     "title": "MIDTERM",
     "section": "2. Variables independientes y variable objetivo",
-    "text": "2. Variables independientes y variable objetivo\n\n\nCode\nX = data[['venta','trx']]\ny = data[['sucursal']]\n\ny['sucursal'] = y['sucursal'].replace({'ECONOMICAS': 0, 'MEDICITY': 1})\n\n\nprint(X)\nprint(y)\n\n\n          venta   trx\n0    29341.6987  2991\n1    61003.9857  5700\n2    37030.7980  5984\n3    47367.4135  6742\n4    63026.8760  6949\n..          ...   ...\n958  32064.8565  4928\n959  25195.3154  3007\n960  16635.9057  1856\n961  47009.0518  5961\n962  35663.2024  2976\n\n[963 rows x 2 columns]\n     sucursal\n0           0\n1           0\n2           0\n3           0\n4           0\n..        ...\n958         0\n959         0\n960         0\n961         0\n962         0\n\n[963 rows x 1 columns]\n\n\nC:\\Users\\Lenovo i5\\AppData\\Local\\Temp\\ipykernel_80060\\2158973334.py:4: FutureWarning: Downcasting behavior in `replace` is deprecated and will be removed in a future version. To retain the old behavior, explicitly call `result.infer_objects(copy=False)`. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`\n  y['sucursal'] = y['sucursal'].replace({'ECONOMICAS': 0, 'MEDICITY': 1})\nC:\\Users\\Lenovo i5\\AppData\\Local\\Temp\\ipykernel_80060\\2158973334.py:4: SettingWithCopyWarning: \nA value is trying to be set on a copy of a slice from a DataFrame.\nTry using .loc[row_indexer,col_indexer] = value instead\n\nSee the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy\n  y['sucursal'] = y['sucursal'].replace({'ECONOMICAS': 0, 'MEDICITY': 1})"
+    "text": "2. Variables independientes y variable objetivo\n\n\nCode\nX = data[['venta','trx']]\ny = data[['sucursal']]\n\ny['sucursal'] = y['sucursal'].replace({'ECONOMICAS': 0, 'MEDICITY': 1})\n\n\nprint(X)\nprint(y)\n\n\n          venta   trx\n0    29341.6987  2991\n1    61003.9857  5700\n2    37030.7980  5984\n3    47367.4135  6742\n4    63026.8760  6949\n..          ...   ...\n958  32064.8565  4928\n959  25195.3154  3007\n960  16635.9057  1856\n961  47009.0518  5961\n962  35663.2024  2976\n\n[963 rows x 2 columns]\n     sucursal\n0           0\n1           0\n2           0\n3           0\n4           0\n..        ...\n958         0\n959         0\n960         0\n961         0\n962         0\n\n[963 rows x 1 columns]\n\n\nC:\\Users\\Lenovo i5\\AppData\\Local\\Temp\\ipykernel_36112\\2158973334.py:4: FutureWarning: Downcasting behavior in `replace` is deprecated and will be removed in a future version. To retain the old behavior, explicitly call `result.infer_objects(copy=False)`. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`\n  y['sucursal'] = y['sucursal'].replace({'ECONOMICAS': 0, 'MEDICITY': 1})\nC:\\Users\\Lenovo i5\\AppData\\Local\\Temp\\ipykernel_36112\\2158973334.py:4: SettingWithCopyWarning: \nA value is trying to be set on a copy of a slice from a DataFrame.\nTry using .loc[row_indexer,col_indexer] = value instead\n\nSee the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy\n  y['sucursal'] = y['sucursal'].replace({'ECONOMICAS': 0, 'MEDICITY': 1})\n\n\nSe uso la variable de venta y transacciones como variables predictora y la la sucursal como variable objetivo. Se hizo un mapeo manual para convertir esta data en numerica ‘ECONOMICAS’: 0, ‘MEDICITY’: 1"
   },
   {
     "objectID": "MIDTER.html#split-data-1",
@@ -368,7 +368,7 @@
     "href": "MIDTER.html#pipeline-1",
     "title": "MIDTERM",
     "section": "4. Pipeline",
-    "text": "4. Pipeline\n\n\nCode\npipe = Pipeline([\n    (\"escalado\",StandardScaler()),\n    (\"logreg\",LogisticRegression(max_iter=100000))\n])"
+    "text": "4. Pipeline\nSe usó un modelo de regresión logistica\n\n\nCode\npipe = Pipeline([\n    (\"escalado\",StandardScaler()),\n    (\"logreg\",LogisticRegression(max_iter=100000))\n])"
   },
   {
     "objectID": "MIDTER.html#train-modelo-1",
@@ -389,20 +389,20 @@
     "href": "MIDTER.html#evaluacion-1",
     "title": "MIDTERM",
     "section": "7. Evaluacion",
-    "text": "7. Evaluacion\n\n\nCode\naccuracy = accuracy_score(y_test,y_pred)\nprecision = precision_score(y_test,y_pred)\nrecall = recall_score(y_test,y_pred)\nf1 = f1_score(y_test,y_pred)\n\nprint(f\"accuracy: {accuracy}\")\nprint(f\"precision: {precision}\")\nprint(f\"recall: {recall}\")\nprint(f\"f1: {f1}\")\n\n\naccuracy: 0.8808290155440415\nprecision: 0.8333333333333334\nrecall: 0.5128205128205128\nf1: 0.6349206349206349"
+    "text": "7. Evaluacion\n\n\nCode\naccuracy = accuracy_score(y_test,y_pred)\nprecision = precision_score(y_test,y_pred)\nrecall = recall_score(y_test,y_pred)\nf1 = f1_score(y_test,y_pred)\n\nprint(f\"accuracy: {accuracy}\")\nprint(f\"precision: {precision}\")\nprint(f\"recall: {recall}\")\nprint(f\"f1: {f1}\")\n\n\naccuracy: 0.8808290155440415\nprecision: 0.8333333333333334\nrecall: 0.5128205128205128\nf1: 0.6349206349206349\n\n\nEn base al accuracy, el modelo predice corrctamente el 88% de las veces. Es muy alto, pero tengo un desvalance de clases ya que tengo 194 MEDICITY vs 769 ECONOMICAS\nEn base a la precision, todas las veces que el modelo predijo MEDICITY, acertó el 83%. Es decir, pocas falsas alarmas.\nEn base al recall, de todas las sucursales realmente MEDICITY, el modelo solo detectó el 51%. Se le escapan casi la mitad.\nEn base al f1, el modelo es moderado, lo que indica que hay margen de mejora en la detección de sucursales MEDICITY."
   },
   {
     "objectID": "MIDTER.html#matriz-de-confusión",
     "href": "MIDTER.html#matriz-de-confusión",
     "title": "MIDTERM",
     "section": "8. Matriz de Confusión",
-    "text": "8. Matriz de Confusión\n\n\nCode\nConfusionMatrixDisplay.from_predictions(y_test,y_pred)"
+    "text": "8. Matriz de Confusión\n\n\nCode\nConfusionMatrixDisplay.from_predictions(y_test,y_pred)\n\n\n\n\n\n\n\n\n\nEn la grefica se puede observar visualmente lo discutido en el apartado anterior. Adicinalmente la sobre la diaginal principal se observan los numero más grandes."
   },
   {
     "objectID": "MIDTER.html#curva-roc",
     "href": "MIDTER.html#curva-roc",
     "title": "MIDTERM",
     "section": "9. Curva ROC",
-    "text": "9. Curva ROC\n\n\nCode\nfrom sklearn.metrics import RocCurveDisplay \nRocCurveDisplay.from_predictions(y_test, y_pred)\nfrom sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, ConfusionMatrixDisplay     \nprint(\"Accuracy:\", accuracy_score(y_test, y_pred))\nprint(\"Precision:\", precision_score(y_test, y_pred))\nprint(\"Recall:\", recall_score(y_test, y_pred))\nprint(\"F1 Score:\", f1_score(y_test, y_pred))\n\n\nAccuracy: 0.8808290155440415\nPrecision: 0.8333333333333334\nRecall: 0.5128205128205128\nF1 Score: 0.6349206349206349"
+    "text": "9. Curva ROC\n\n\nCode\nfrom sklearn.metrics import RocCurveDisplay \nRocCurveDisplay.from_predictions(y_test, y_pred)\nfrom sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, ConfusionMatrixDisplay     \nprint(\"Accuracy:\", accuracy_score(y_test, y_pred))\nprint(\"Precision:\", precision_score(y_test, y_pred))\nprint(\"Recall:\", recall_score(y_test, y_pred))\nprint(\"F1 Score:\", f1_score(y_test, y_pred))\n\n\nAccuracy: 0.8808290155440415\nPrecision: 0.8333333333333334\nRecall: 0.5128205128205128\nF1 Score: 0.6349206349206349\n\n\n\n\n\n\n\n\n\nDe la curva ROC se obtiene un AUC = 0.74 lo que indica que el modelo tiene una capacidad razonable para distinguir entre sucursales ECONOMICA y MEDICITY."
   }
 ]
