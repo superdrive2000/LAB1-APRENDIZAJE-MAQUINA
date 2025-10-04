@@ -11,7 +11,7 @@ website:
       - href: eda.qmd
         text: EDA
       - href: lab.qmd
-        text: LAB
+        text: LAB1
       - href: MIDTER.qmd
         text: MIDTER
 
