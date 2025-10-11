@@ -128,7 +128,7 @@ df_balanced.head()
 
 ```
 
-# Limpieza del twit
+# Limpieza del tweet
 Eliminamos menciones
 ```{python}
 df_balanced['content'] = df_balanced['content'].str.replace(r'@\w+', '', regex=True)
@@ -191,7 +191,7 @@ df_balanced['content'] = [preprocessing_document(doc) for doc in df_balanced['co
 df_balanced['content']
 ```
 
-# Seleccion de X e y
+# Selección de X e y
 
 
 ```{python}
