@@ -1,0 +1,107 @@
+---
+title: "Categorical encoding"
+author: "Jesus Quinga"
+date: "25-09-2025"     
+format: "html"
+#format:
+#    html:
+#        embed-resources: true
+
+#AQUI PONER EL PATH HACIA SU AMBIENTE VIRTUAL
+execute:
+  python: C:/Users/Lenovo i5/Documents/MAESTRIA IA YACHAY TECH/APRENDIZAJE DE MAQUINA/SEMANA 1/.venv/Scripts/python.exe
+---
+
+
+# Ejemplo de categircal encoding
+
+## Importamos las librerias
+
+```{python}
+import pandas as pd
+from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder,StandardScaler,LabelEncoder
+from sklearn.compose import ColumnTransformer
+```
+
+## Dataframe de ejemplo
+
+
+```{python}
+data = {
+    'size':['M','S','L'], #categorico ordinal
+    'color':['green','red','blue'], #categorico nominal = OneHotEncoder()
+    'price': [10.1, 13.5, 15.6], # numerico continuo
+    'label': ['pantalones','camisetas','camisetas'] #etiqueta
+
+} 
+
+
+df = pd.DataFrame(data)
+df
+```
+
+## LabelEncoder(): usar solo en la columna de 'output'
+
+
+```{python}
+df['label_encoded'] = LabelEncoder().fit_transform(df['label'])
+df
+```
+
+## OrdinalEncoder(): usar en columnas donde los valores tienen un orden natural (e.g S<M < L )
+
+```{python}
+
+size_order = [[ 'S','M','L']]
+df['size_encoder'] = OrdinalEncoder(categories=size_order).fit_transform(df[['size']])
+df
+```
+
+
+## OneHotEncoder(): usar para las columnas categoricas nominales, donde los valores no tienen orden
+
+
+```{python}
+
+color_encoder = OneHotEncoder(sparse_output= False,handle_unknown='ignore')
+color_encoded = color_encoder.fit_transform(df[['color']])
+
+color_title_encoded = color_encoder.get_feature_names_out(['color'])
+
+df[color_title_encoded] = color_encoded
+df
+
+```
+
+# Column Transformer
+
+## Creación del preprocessor
+
+```{python}
+
+categorical_features = ['color']
+ordinal_features = ['size']
+numerical_features = ['price']
+
+size_order = [['S','M','L']]
+
+preprocessor =  ColumnTransformer(
+    transformers=[
+      ('color_onehot',OneHotEncoder(),categorical_features),
+      ('size_ordenc',OrdinalEncoder(categories=size_order),ordinal_features),
+      ('price_stan',StandardScaler(),numerical_features)
+
+
+    ]
+)
+
+
+```
+
+## Aplicación del preprocessor
+
+
+```{python}
+features_transformed = preprocessor.fit_transform(df)
+features_transformed
+```

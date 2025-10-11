@@ -1,0 +1,2524 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.24">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Jesus Quinga">
+
+<title>LAB 2 – Machine Learning</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-a35d343c8bdbcb87d3b82ed68e48a46c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ml_text.html">Natural Language Processing (NLP)</a></li><li class="breadcrumb-item"><a href="./LAB2.html">LAB 2</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+      <a href="./index.html" class="sidebar-logo-link">
+      </a>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Introduction to ML</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./eda.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Exploratory Data Analysis (EDA)</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./metrics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+ <span class="menu-text">categorical_encoding.qmd</span>
+  </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./categorical_pipeline.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Categorical pipeline</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Natural Language Processing (NLP)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ml_text.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Categorical pipeline</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bagofwords.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bag of words</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+ <span class="menu-text">tfidf.qmd</span>
+  </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./text_classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Text Clasification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./LAB2.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">LAB 2</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#cargar-data" id="toc-cargar-data" class="nav-link active" data-scroll-target="#cargar-data">Cargar Data</a></li>
+  <li><a href="#creacción-de-columan-target" id="toc-creacción-de-columan-target" class="nav-link" data-scroll-target="#creacción-de-columan-target">Creacción de columan target</a></li>
+  <li><a href="#limpieza-del-twit" id="toc-limpieza-del-twit" class="nav-link" data-scroll-target="#limpieza-del-twit">Limpieza del twit</a></li>
+  <li><a href="#seleccion-de-x-e-y" id="toc-seleccion-de-x-e-y" class="nav-link" data-scroll-target="#seleccion-de-x-e-y">Seleccion de X e y</a></li>
+  <li><a href="#train-test" id="toc-train-test" class="nav-link" data-scroll-target="#train-test">Train test</a></li>
+  <li><a href="#vectorizacion-de-text" id="toc-vectorizacion-de-text" class="nav-link" data-scroll-target="#vectorizacion-de-text">Vectorizacion de text</a></li>
+  <li><a href="#definición-del-pipeline" id="toc-definición-del-pipeline" class="nav-link" data-scroll-target="#definición-del-pipeline">Definición del Pipeline</a></li>
+  <li><a href="#fit-del-modelo" id="toc-fit-del-modelo" class="nav-link" data-scroll-target="#fit-del-modelo">Fit del modelo</a></li>
+  <li><a href="#predicción" id="toc-predicción" class="nav-link" data-scroll-target="#predicción">Predicción</a></li>
+  <li><a href="#reporte-de-clasificación" id="toc-reporte-de-clasificación" class="nav-link" data-scroll-target="#reporte-de-clasificación">Reporte de clasificación</a></li>
+  <li><a href="#matriz-de-confusión" id="toc-matriz-de-confusión" class="nav-link" data-scroll-target="#matriz-de-confusión">Matriz de confusión</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ml_text.html">Natural Language Processing (NLP)</a></li><li class="breadcrumb-item"><a href="./LAB2.html">LAB 2</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">LAB 2</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Jesus Quinga </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div id="df837cdc" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.naive_bayes <span class="im">import</span> MultinomialNB</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> classification_report, confusion_matrix, ConfusionMatrixDisplay</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># vectorizacion textual</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> TfidfTransformer</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> CountVectorizer</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> nltk</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk.corpus <span class="im">import</span> stopwords</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>nltk.download(<span class="st">'stopwords'</span>) <span class="co"># necessary for removal of stop words</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>nltk.download(<span class="st">'wordnet'</span>) <span class="co"># necessary for lemmatization</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> LabelEncoder</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>[nltk_data] Downloading package stopwords to C:\Users\Lenovo
+[nltk_data]     i5\AppData\Roaming\nltk_data...
+[nltk_data]   Package stopwords is already up-to-date!
+[nltk_data] Downloading package wordnet to C:\Users\Lenovo
+[nltk_data]     i5\AppData\Roaming\nltk_data...
+[nltk_data]   Package wordnet is already up-to-date!</code></pre>
+</div>
+</div>
+<section id="cargar-data" class="level1">
+<h1>Cargar Data</h1>
+<div id="2203a0ec" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://raw.githubusercontent.com/erickedu85/dataset/refs/heads/master/tweets/tweets_totales_con_sentimiento_ml.csv"</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(url)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="81">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">tweetId</th>
+<th data-quarto-table-cell-role="th">tweetUrl</th>
+<th data-quarto-table-cell-role="th">content</th>
+<th data-quarto-table-cell-role="th">isReply</th>
+<th data-quarto-table-cell-role="th">replyTo</th>
+<th data-quarto-table-cell-role="th">createdAt</th>
+<th data-quarto-table-cell-role="th">authorId</th>
+<th data-quarto-table-cell-role="th">authorName</th>
+<th data-quarto-table-cell-role="th">authorUsername</th>
+<th data-quarto-table-cell-role="th">authorVerified</th>
+<th data-quarto-table-cell-role="th">...</th>
+<th data-quarto-table-cell-role="th">conversationId</th>
+<th data-quarto-table-cell-role="th">inReplyToId</th>
+<th data-quarto-table-cell-role="th">Date</th>
+<th data-quarto-table-cell-role="th">time_response</th>
+<th data-quarto-table-cell-role="th">account_age_days</th>
+<th data-quarto-table-cell-role="th">mentions_count</th>
+<th data-quarto-table-cell-role="th">hashtags_count</th>
+<th data-quarto-table-cell-role="th">content_length</th>
+<th data-quarto-table-cell-role="th">has_profile_picture</th>
+<th data-quarto-table-cell-role="th">sentiment_polarity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>1877190873579950336</td>
+<td>https://x.com/hectorjalonm/status/187719087357...</td>
+<td>@DiegoPonguill10 @DanielNoboaOk @LuisaGonzalez...</td>
+<td>True</td>
+<td>DiegoPonguill10</td>
+<td>2025-01-09 03:09:00</td>
+<td>1458536175119986688</td>
+<td>héctor 🌵</td>
+<td>hectorjalonm</td>
+<td>False</td>
+<td>...</td>
+<td>1877115691146306005</td>
+<td>1877188297551650816</td>
+<td>2025-01-08 22:10:30</td>
+<td>298.5</td>
+<td>1151</td>
+<td>3</td>
+<td>0</td>
+<td>88</td>
+<td>True</td>
+<td>0.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>1877188297551650816</td>
+<td>https://x.com/DiegoPonguill10/status/187718829...</td>
+<td>@hectorjalonm @DanielNoboaOk @LuisaGonzalezEc ...</td>
+<td>True</td>
+<td>hectorjalonm</td>
+<td>2025-01-09 02:59:00</td>
+<td>1555549203211976704</td>
+<td>Diego Ponguillo Vargas TODO TODITO #5 😉 HLVS!!</td>
+<td>DiegoPonguill10</td>
+<td>False</td>
+<td>...</td>
+<td>1877115691146306005</td>
+<td>1877123519743451648</td>
+<td>2025-01-08 22:10:30</td>
+<td>288.5</td>
+<td>883</td>
+<td>3</td>
+<td>0</td>
+<td>119</td>
+<td>True</td>
+<td>0.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>1877186248986501120</td>
+<td>https://x.com/ekuador_593/status/1877186248986...</td>
+<td>@Gregori58965636 @yesendiaz @DanielNoboaOk Otr...</td>
+<td>True</td>
+<td>Gregori58965636</td>
+<td>2025-01-09 02:50:00</td>
+<td>1457524470365708288</td>
+<td>Sebastián Noboa Ec</td>
+<td>ekuador_593</td>
+<td>False</td>
+<td>...</td>
+<td>1877115691146306005</td>
+<td>1877122565782576896</td>
+<td>2025-01-08 22:10:30</td>
+<td>279.5</td>
+<td>1153</td>
+<td>3</td>
+<td>0</td>
+<td>60</td>
+<td>True</td>
+<td>0.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>1877168335193833472</td>
+<td>https://x.com/JRamirez2O24/status/187716833519...</td>
+<td>@jdiegol2010 @DanielNoboaOk https://t.co/CsLWQ...</td>
+<td>True</td>
+<td>jdiegol2010</td>
+<td>2025-01-09 01:39:00</td>
+<td>1759130630766341888</td>
+<td>ANDRES RAMIREZ</td>
+<td>JRamirez2O24</td>
+<td>False</td>
+<td>...</td>
+<td>1877115691146306005</td>
+<td>1877159202646315264</td>
+<td>2025-01-08 22:10:30</td>
+<td>208.5</td>
+<td>321</td>
+<td>2</td>
+<td>0</td>
+<td>51</td>
+<td>True</td>
+<td>0.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>1877159202646315264</td>
+<td>https://x.com/jdiegol2010/status/1877159202646...</td>
+<td>@JRamirez2O24 @DanielNoboaOk El tema es respet...</td>
+<td>True</td>
+<td>JRamirez2O24</td>
+<td>2025-01-09 01:03:00</td>
+<td>146111157</td>
+<td>Juan Diego</td>
+<td>jdiegol2010</td>
+<td>False</td>
+<td>...</td>
+<td>1877115691146306005</td>
+<td>1877130145938481152</td>
+<td>2025-01-08 22:10:30</td>
+<td>172.5</td>
+<td>5343</td>
+<td>2</td>
+<td>0</td>
+<td>80</td>
+<td>True</td>
+<td>0.0</td>
+</tr>
+</tbody>
+</table>
+
+<p>5 rows × 26 columns</p>
+</div>
+</div>
+</div>
+</section>
+<section id="creacción-de-columan-target" class="level1">
+<h1>Creacción de columan target</h1>
+<div id="ea5e58eb" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'sentiment_label'</span>] <span class="op">=</span> df[<span class="st">'sentiment_polarity'</span>].<span class="bu">apply</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> x: <span class="st">'negativo'</span> <span class="cf">if</span> x <span class="op">&lt;</span> <span class="dv">0</span> <span class="cf">else</span> (<span class="st">'neutral'</span> <span class="cf">if</span> x <span class="op">==</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">'positivo'</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="82">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">tweetId</th>
+<th data-quarto-table-cell-role="th">tweetUrl</th>
+<th data-quarto-table-cell-role="th">content</th>
+<th data-quarto-table-cell-role="th">isReply</th>
+<th data-quarto-table-cell-role="th">replyTo</th>
+<th data-quarto-table-cell-role="th">createdAt</th>
+<th data-quarto-table-cell-role="th">authorId</th>
+<th data-quarto-table-cell-role="th">authorName</th>
+<th data-quarto-table-cell-role="th">authorUsername</th>
+<th data-quarto-table-cell-role="th">authorVerified</th>
+<th data-quarto-table-cell-role="th">...</th>
+<th data-quarto-table-cell-role="th">inReplyToId</th>
+<th data-quarto-table-cell-role="th">Date</th>
+<th data-quarto-table-cell-role="th">time_response</th>
+<th data-quarto-table-cell-role="th">account_age_days</th>
+<th data-quarto-table-cell-role="th">mentions_count</th>
+<th data-quarto-table-cell-role="th">hashtags_count</th>
+<th data-quarto-table-cell-role="th">content_length</th>
+<th data-quarto-table-cell-role="th">has_profile_picture</th>
+<th data-quarto-table-cell-role="th">sentiment_polarity</th>
+<th data-quarto-table-cell-role="th">sentiment_label</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>1877190873579950336</td>
+<td>https://x.com/hectorjalonm/status/187719087357...</td>
+<td>@DiegoPonguill10 @DanielNoboaOk @LuisaGonzalez...</td>
+<td>True</td>
+<td>DiegoPonguill10</td>
+<td>2025-01-09 03:09:00</td>
+<td>1458536175119986688</td>
+<td>héctor 🌵</td>
+<td>hectorjalonm</td>
+<td>False</td>
+<td>...</td>
+<td>1877188297551650816</td>
+<td>2025-01-08 22:10:30</td>
+<td>298.500000</td>
+<td>1151</td>
+<td>3</td>
+<td>0</td>
+<td>88</td>
+<td>True</td>
+<td>0.00</td>
+<td>neutral</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>1877188297551650816</td>
+<td>https://x.com/DiegoPonguill10/status/187718829...</td>
+<td>@hectorjalonm @DanielNoboaOk @LuisaGonzalezEc ...</td>
+<td>True</td>
+<td>hectorjalonm</td>
+<td>2025-01-09 02:59:00</td>
+<td>1555549203211976704</td>
+<td>Diego Ponguillo Vargas TODO TODITO #5 😉 HLVS!!</td>
+<td>DiegoPonguill10</td>
+<td>False</td>
+<td>...</td>
+<td>1877123519743451648</td>
+<td>2025-01-08 22:10:30</td>
+<td>288.500000</td>
+<td>883</td>
+<td>3</td>
+<td>0</td>
+<td>119</td>
+<td>True</td>
+<td>0.00</td>
+<td>neutral</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>1877186248986501120</td>
+<td>https://x.com/ekuador_593/status/1877186248986...</td>
+<td>@Gregori58965636 @yesendiaz @DanielNoboaOk Otr...</td>
+<td>True</td>
+<td>Gregori58965636</td>
+<td>2025-01-09 02:50:00</td>
+<td>1457524470365708288</td>
+<td>Sebastián Noboa Ec</td>
+<td>ekuador_593</td>
+<td>False</td>
+<td>...</td>
+<td>1877122565782576896</td>
+<td>2025-01-08 22:10:30</td>
+<td>279.500000</td>
+<td>1153</td>
+<td>3</td>
+<td>0</td>
+<td>60</td>
+<td>True</td>
+<td>0.00</td>
+<td>neutral</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>1877168335193833472</td>
+<td>https://x.com/JRamirez2O24/status/187716833519...</td>
+<td>@jdiegol2010 @DanielNoboaOk https://t.co/CsLWQ...</td>
+<td>True</td>
+<td>jdiegol2010</td>
+<td>2025-01-09 01:39:00</td>
+<td>1759130630766341888</td>
+<td>ANDRES RAMIREZ</td>
+<td>JRamirez2O24</td>
+<td>False</td>
+<td>...</td>
+<td>1877159202646315264</td>
+<td>2025-01-08 22:10:30</td>
+<td>208.500000</td>
+<td>321</td>
+<td>2</td>
+<td>0</td>
+<td>51</td>
+<td>True</td>
+<td>0.00</td>
+<td>neutral</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>1877159202646315264</td>
+<td>https://x.com/jdiegol2010/status/1877159202646...</td>
+<td>@JRamirez2O24 @DanielNoboaOk El tema es respet...</td>
+<td>True</td>
+<td>JRamirez2O24</td>
+<td>2025-01-09 01:03:00</td>
+<td>146111157</td>
+<td>Juan Diego</td>
+<td>jdiegol2010</td>
+<td>False</td>
+<td>...</td>
+<td>1877130145938481152</td>
+<td>2025-01-08 22:10:30</td>
+<td>172.500000</td>
+<td>5343</td>
+<td>2</td>
+<td>0</td>
+<td>80</td>
+<td>True</td>
+<td>0.00</td>
+<td>neutral</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">...</th>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">158868</th>
+<td>1910030377110077696</td>
+<td>https://x.com/lilibeth7394/status/191003037711...</td>
+<td>@LuisaGonzalezEc Por más hospitales con medica...</td>
+<td>True</td>
+<td>LuisaGonzalezEc</td>
+<td>2025-04-09 18:01:00</td>
+<td>193481457</td>
+<td>Od.Lily Silva</td>
+<td>lilibeth7394</td>
+<td>False</td>
+<td>...</td>
+<td>1910025386240450816</td>
+<td>2025-04-09 17:41:53</td>
+<td>19.116667</td>
+<td>5219</td>
+<td>1</td>
+<td>0</td>
+<td>74</td>
+<td>True</td>
+<td>0.00</td>
+<td>neutral</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">158869</th>
+<td>1910028396467478784</td>
+<td>https://x.com/_Claudia______/status/1910028396...</td>
+<td>@LuisaGonzalezEc ¡Vamos Con TODO PresidentA \n...</td>
+<td>True</td>
+<td>LuisaGonzalezEc</td>
+<td>2025-04-09 17:53:00</td>
+<td>1464620252189401088</td>
+<td>Claudia</td>
+<td>_Claudia______</td>
+<td>False</td>
+<td>...</td>
+<td>1910025386240450816</td>
+<td>2025-04-09 17:41:53</td>
+<td>11.116667</td>
+<td>1134</td>
+<td>1</td>
+<td>0</td>
+<td>123</td>
+<td>True</td>
+<td>0.00</td>
+<td>neutral</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">158870</th>
+<td>1910026147896631552</td>
+<td>https://x.com/IsaiasRodriguz/status/1910026147...</td>
+<td>@LuisaGonzalezEc Vamos con todo PRESIDENTA ! 💪...</td>
+<td>True</td>
+<td>LuisaGonzalezEc</td>
+<td>2025-04-09 17:44:00</td>
+<td>383933505</td>
+<td>ISAÍAS RODRIGUEZ 🇪🇨</td>
+<td>IsaiasRodriguz</td>
+<td>False</td>
+<td>...</td>
+<td>1910025386240450816</td>
+<td>2025-04-09 17:41:53</td>
+<td>2.116667</td>
+<td>4843</td>
+<td>1</td>
+<td>0</td>
+<td>174</td>
+<td>True</td>
+<td>0.75</td>
+<td>positivo</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">158871</th>
+<td>1910026005353533184</td>
+<td>https://x.com/controlremoto85/status/191002600...</td>
+<td>@LuisaGonzalezEc Luisa presidenta sin dudarlo</td>
+<td>True</td>
+<td>LuisaGonzalezEc</td>
+<td>2025-04-09 17:44:00</td>
+<td>4846627047</td>
+<td>Kandy</td>
+<td>controlremoto85</td>
+<td>False</td>
+<td>...</td>
+<td>1910025386240450816</td>
+<td>2025-04-09 17:41:53</td>
+<td>2.116667</td>
+<td>3267</td>
+<td>1</td>
+<td>0</td>
+<td>45</td>
+<td>True</td>
+<td>0.00</td>
+<td>neutral</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">158872</th>
+<td>1910025946931027968</td>
+<td>https://x.com/allechhh/status/1910025946931027996</td>
+<td>@LuisaGonzalezEc Desde México todo mi apoyo a ...</td>
+<td>True</td>
+<td>LuisaGonzalezEc</td>
+<td>2025-04-09 17:44:00</td>
+<td>1418120966480310272</td>
+<td>Allech</td>
+<td>allechhh</td>
+<td>False</td>
+<td>...</td>
+<td>1910025386240450816</td>
+<td>2025-04-09 17:41:53</td>
+<td>2.116667</td>
+<td>1262</td>
+<td>2</td>
+<td>0</td>
+<td>188</td>
+<td>True</td>
+<td>0.00</td>
+<td>neutral</td>
+</tr>
+</tbody>
+</table>
+
+<p>158873 rows × 27 columns</p>
+</div>
+</div>
+</div>
+<div id="52e4f26d" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Contar la cantidad de valores por clase</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>counts <span class="op">=</span> df[<span class="st">'sentiment_label'</span>].value_counts()</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar la cuenta en consola</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(counts)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear gráfico de barras</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>,<span class="dv">4</span>))</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>counts.plot(kind<span class="op">=</span><span class="st">'bar'</span>, color<span class="op">=</span>[<span class="st">'red'</span>, <span class="st">'gray'</span>, <span class="st">'green'</span>])</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Cantidad de tweets por clase de sentimiento'</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Clase de sentimiento'</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Cantidad de registros'</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>sentiment_label
+neutral     152896
+negativo      3481
+positivo      2496
+Name: count, dtype: int64</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="LAB2_files/figure-html/cell-5-output-2.png" width="544" height="376" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Existe una frecuecia de 92% neutral 2% positivo y 2% negativo. Por lo que se eligira un dataset mas pequeño por submuestreo. De tal forma que tengamos el mismo procentaje en cada clase</p>
+<div id="50638d86" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular el tamaño mínimo de las clases</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>min_count <span class="op">=</span> df[<span class="st">'sentiment_label'</span>].value_counts().<span class="bu">min</span>()</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear un dataset balanceado por submuestreo</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>df_balanced <span class="op">=</span> (</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    df.groupby(<span class="st">'sentiment_label'</span>, group_keys<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>      .<span class="bu">apply</span>(<span class="kw">lambda</span> x: x.sample(min_count, random_state<span class="op">=</span><span class="dv">42</span>))</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>df_balanced</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\Lenovo i5\AppData\Local\Temp\ipykernel_18212\3653154469.py:7: FutureWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+  .apply(lambda x: x.sample(min_count, random_state=42))</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="84">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">tweetId</th>
+<th data-quarto-table-cell-role="th">tweetUrl</th>
+<th data-quarto-table-cell-role="th">content</th>
+<th data-quarto-table-cell-role="th">isReply</th>
+<th data-quarto-table-cell-role="th">replyTo</th>
+<th data-quarto-table-cell-role="th">createdAt</th>
+<th data-quarto-table-cell-role="th">authorId</th>
+<th data-quarto-table-cell-role="th">authorName</th>
+<th data-quarto-table-cell-role="th">authorUsername</th>
+<th data-quarto-table-cell-role="th">authorVerified</th>
+<th data-quarto-table-cell-role="th">...</th>
+<th data-quarto-table-cell-role="th">inReplyToId</th>
+<th data-quarto-table-cell-role="th">Date</th>
+<th data-quarto-table-cell-role="th">time_response</th>
+<th data-quarto-table-cell-role="th">account_age_days</th>
+<th data-quarto-table-cell-role="th">mentions_count</th>
+<th data-quarto-table-cell-role="th">hashtags_count</th>
+<th data-quarto-table-cell-role="th">content_length</th>
+<th data-quarto-table-cell-role="th">has_profile_picture</th>
+<th data-quarto-table-cell-role="th">sentiment_polarity</th>
+<th data-quarto-table-cell-role="th">sentiment_label</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">101548</th>
+<td>1886980365148963328</td>
+<td>https://x.com/g94_javier/status/18869803651489...</td>
+<td>@LuisaGonzalezEc @MashiRafael Encuestas realiz...</td>
+<td>True</td>
+<td>LuisaGonzalezEc</td>
+<td>2025-02-05 03:29:00</td>
+<td>1183150927932514304</td>
+<td>Torerismo⭐</td>
+<td>g94_javier</td>
+<td>False</td>
+<td>...</td>
+<td>1886967510060220672</td>
+<td>2025-02-05 02:38:07</td>
+<td>50.883333</td>
+<td>1911</td>
+<td>2</td>
+<td>0</td>
+<td>105</td>
+<td>True</td>
+<td>-1.000000</td>
+<td>negativo</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">33079</th>
+<td>1886846023269597184</td>
+<td>https://x.com/Antoam19/status/1886846023269597441</td>
+<td>@DanielNoboaOk No sirves miserable mentiroso. ...</td>
+<td>True</td>
+<td>DanielNoboaOk</td>
+<td>2025-02-04 18:35:00</td>
+<td>1364024194716024832</td>
+<td>Antoam</td>
+<td>Antoam19</td>
+<td>False</td>
+<td>...</td>
+<td>1886837107869749248</td>
+<td>2025-02-04 17:59:56</td>
+<td>35.066667</td>
+<td>1411</td>
+<td>1</td>
+<td>0</td>
+<td>104</td>
+<td>True</td>
+<td>-1.000000</td>
+<td>negativo</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">40348</th>
+<td>1903795749420167168</td>
+<td>https://x.com/MarArs95716981/status/1903795749...</td>
+<td>@DanielNoboaOk Este estúpido derechosos bobois...</td>
+<td>True</td>
+<td>DanielNoboaOk</td>
+<td>2025-03-23 13:07:00</td>
+<td>1601086166069121024</td>
+<td>Mar Ars</td>
+<td>MarArs95716981</td>
+<td>False</td>
+<td>...</td>
+<td>1903504773057253888</td>
+<td>2025-03-22 17:51:17</td>
+<td>1155.716667</td>
+<td>757</td>
+<td>1</td>
+<td>0</td>
+<td>136</td>
+<td>True</td>
+<td>-1.000000</td>
+<td>negativo</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">45949</th>
+<td>1904370324356861952</td>
+<td>https://x.com/Patrici99978101/status/190437032...</td>
+<td>@DanielNoboaOk Andate a la puta Madre Narcoban...</td>
+<td>True</td>
+<td>DanielNoboaOk</td>
+<td>2025-03-25 03:10:00</td>
+<td>1395569809413263104</td>
+<td>Patricio Andrade F.</td>
+<td>Patrici99978101</td>
+<td>False</td>
+<td>...</td>
+<td>1904003201143115776</td>
+<td>2025-03-24 02:51:52</td>
+<td>1458.133333</td>
+<td>1324</td>
+<td>1</td>
+<td>0</td>
+<td>131</td>
+<td>False</td>
+<td>-0.100000</td>
+<td>negativo</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">54939</th>
+<td>1906874243511369728</td>
+<td>https://x.com/CondeLoor/status/190687424351136...</td>
+<td>@DanielNoboaOk Es increíble q en el hospital d...</td>
+<td>True</td>
+<td>DanielNoboaOk</td>
+<td>2025-04-01 01:00:00</td>
+<td>1059842395720896384</td>
+<td>Ruth Conde Loor</td>
+<td>CondeLoor</td>
+<td>False</td>
+<td>...</td>
+<td>1906848863086162432</td>
+<td>2025-03-31 23:19:31</td>
+<td>100.483333</td>
+<td>2251</td>
+<td>1</td>
+<td>0</td>
+<td>206</td>
+<td>True</td>
+<td>-1.000000</td>
+<td>negativo</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">...</th>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">107572</th>
+<td>1888477579344015872</td>
+<td>https://x.com/Chrispaz/status/1888477579344015868</td>
+<td>@LuisaGonzalezEc Te hackearon? Cómo te hackean...</td>
+<td>True</td>
+<td>LuisaGonzalezEc</td>
+<td>2025-02-09 06:38:00</td>
+<td>1159021</td>
+<td>Christian Pazmiño</td>
+<td>Chrispaz</td>
+<td>False</td>
+<td>...</td>
+<td>1888364731469013248</td>
+<td>2025-02-08 23:10:10</td>
+<td>447.833333</td>
+<td>6506</td>
+<td>1</td>
+<td>0</td>
+<td>58</td>
+<td>True</td>
+<td>0.136364</td>
+<td>positivo</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">74547</th>
+<td>1880322867445060096</td>
+<td>https://x.com/elmigue1974/status/1880322867445...</td>
+<td>@LuisaGonzalezEc Y los social cristianos y los...</td>
+<td>True</td>
+<td>LuisaGonzalezEc</td>
+<td>2025-01-17 18:34:00</td>
+<td>1497732230235500288</td>
+<td>Miky A.</td>
+<td>elmigue1974</td>
+<td>False</td>
+<td>...</td>
+<td>1880264844622143744</td>
+<td>2025-01-17 14:44:07</td>
+<td>229.883333</td>
+<td>1042</td>
+<td>1</td>
+<td>0</td>
+<td>73</td>
+<td>True</td>
+<td>0.033333</td>
+<td>positivo</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">77394</th>
+<td>1881185218813706496</td>
+<td>https://x.com/fillearkimonkey/status/188118521...</td>
+<td>@LuisaGonzalezEc Y el nombre del general GAVE...</td>
+<td>True</td>
+<td>LuisaGonzalezEc</td>
+<td>2025-01-20 03:41:00</td>
+<td>208032959</td>
+<td>Fille de Dieu</td>
+<td>fillearkimonkey</td>
+<td>False</td>
+<td>...</td>
+<td>1881163417613930752</td>
+<td>2025-01-20 02:14:43</td>
+<td>86.283333</td>
+<td>5184</td>
+<td>1</td>
+<td>0</td>
+<td>93</td>
+<td>True</td>
+<td>0.097656</td>
+<td>positivo</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">85763</th>
+<td>1882826930770321152</td>
+<td>https://x.com/_jenp98/status/1882826930770321517</td>
+<td>@LuisaGonzalezEc Si está bien, te creí haha.</td>
+<td>True</td>
+<td>LuisaGonzalezEc</td>
+<td>2025-01-24 16:24:00</td>
+<td>803806629904969728</td>
+<td>Mr. Navas🫢</td>
+<td>_jenp98</td>
+<td>False</td>
+<td>...</td>
+<td>1882465099228832256</td>
+<td>2025-01-23 16:27:08</td>
+<td>1436.866667</td>
+<td>2957</td>
+<td>1</td>
+<td>0</td>
+<td>44</td>
+<td>True</td>
+<td>0.200000</td>
+<td>positivo</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">59942</th>
+<td>1876699764189732864</td>
+<td>https://x.com/shyriazteca/status/1876699764189...</td>
+<td>@LuisaGonzalezEc @RC5Oficial El metro lo comen...</td>
+<td>True</td>
+<td>LuisaGonzalezEc</td>
+<td>2025-01-07 18:37:00</td>
+<td>197232295</td>
+<td>Ivan Torres</td>
+<td>shyriazteca</td>
+<td>False</td>
+<td>...</td>
+<td>1876387982648946688</td>
+<td>2025-01-06 21:58:51</td>
+<td>1238.150000</td>
+<td>5210</td>
+<td>2</td>
+<td>0</td>
+<td>87</td>
+<td>True</td>
+<td>0.050000</td>
+<td>positivo</td>
+</tr>
+</tbody>
+</table>
+
+<p>7488 rows × 27 columns</p>
+</div>
+</div>
+</div>
+<div id="4dd020a1" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Contar la cantidad de valores por clase</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>counts <span class="op">=</span> df_balanced[<span class="st">'sentiment_label'</span>].value_counts()</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar la cuenta en consola</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(counts)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear gráfico de barras</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>,<span class="dv">4</span>))</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>counts.plot(kind<span class="op">=</span><span class="st">'bar'</span>, color<span class="op">=</span>[<span class="st">'red'</span>, <span class="st">'gray'</span>, <span class="st">'green'</span>])</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Cantidad de tweets por clase de sentimiento'</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Clase de sentimiento'</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Cantidad de registros'</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>sentiment_label
+negativo    2496
+neutral     2496
+positivo    2496
+Name: count, dtype: int64</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="LAB2_files/figure-html/cell-7-output-2.png" width="527" height="376" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Codificamos la columna de target:</p>
+<div id="7919be78" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>le <span class="op">=</span> LabelEncoder()</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>df_balanced[<span class="st">'sentiment_encoded'</span>] <span class="op">=</span> le.fit_transform(df_balanced[<span class="st">'sentiment_label'</span>])</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>df_balanced.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="86">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">tweetId</th>
+<th data-quarto-table-cell-role="th">tweetUrl</th>
+<th data-quarto-table-cell-role="th">content</th>
+<th data-quarto-table-cell-role="th">isReply</th>
+<th data-quarto-table-cell-role="th">replyTo</th>
+<th data-quarto-table-cell-role="th">createdAt</th>
+<th data-quarto-table-cell-role="th">authorId</th>
+<th data-quarto-table-cell-role="th">authorName</th>
+<th data-quarto-table-cell-role="th">authorUsername</th>
+<th data-quarto-table-cell-role="th">authorVerified</th>
+<th data-quarto-table-cell-role="th">...</th>
+<th data-quarto-table-cell-role="th">Date</th>
+<th data-quarto-table-cell-role="th">time_response</th>
+<th data-quarto-table-cell-role="th">account_age_days</th>
+<th data-quarto-table-cell-role="th">mentions_count</th>
+<th data-quarto-table-cell-role="th">hashtags_count</th>
+<th data-quarto-table-cell-role="th">content_length</th>
+<th data-quarto-table-cell-role="th">has_profile_picture</th>
+<th data-quarto-table-cell-role="th">sentiment_polarity</th>
+<th data-quarto-table-cell-role="th">sentiment_label</th>
+<th data-quarto-table-cell-role="th">sentiment_encoded</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">101548</th>
+<td>1886980365148963328</td>
+<td>https://x.com/g94_javier/status/18869803651489...</td>
+<td>@LuisaGonzalezEc @MashiRafael Encuestas realiz...</td>
+<td>True</td>
+<td>LuisaGonzalezEc</td>
+<td>2025-02-05 03:29:00</td>
+<td>1183150927932514304</td>
+<td>Torerismo⭐</td>
+<td>g94_javier</td>
+<td>False</td>
+<td>...</td>
+<td>2025-02-05 02:38:07</td>
+<td>50.883333</td>
+<td>1911</td>
+<td>2</td>
+<td>0</td>
+<td>105</td>
+<td>True</td>
+<td>-1.0</td>
+<td>negativo</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">33079</th>
+<td>1886846023269597184</td>
+<td>https://x.com/Antoam19/status/1886846023269597441</td>
+<td>@DanielNoboaOk No sirves miserable mentiroso. ...</td>
+<td>True</td>
+<td>DanielNoboaOk</td>
+<td>2025-02-04 18:35:00</td>
+<td>1364024194716024832</td>
+<td>Antoam</td>
+<td>Antoam19</td>
+<td>False</td>
+<td>...</td>
+<td>2025-02-04 17:59:56</td>
+<td>35.066667</td>
+<td>1411</td>
+<td>1</td>
+<td>0</td>
+<td>104</td>
+<td>True</td>
+<td>-1.0</td>
+<td>negativo</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">40348</th>
+<td>1903795749420167168</td>
+<td>https://x.com/MarArs95716981/status/1903795749...</td>
+<td>@DanielNoboaOk Este estúpido derechosos bobois...</td>
+<td>True</td>
+<td>DanielNoboaOk</td>
+<td>2025-03-23 13:07:00</td>
+<td>1601086166069121024</td>
+<td>Mar Ars</td>
+<td>MarArs95716981</td>
+<td>False</td>
+<td>...</td>
+<td>2025-03-22 17:51:17</td>
+<td>1155.716667</td>
+<td>757</td>
+<td>1</td>
+<td>0</td>
+<td>136</td>
+<td>True</td>
+<td>-1.0</td>
+<td>negativo</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">45949</th>
+<td>1904370324356861952</td>
+<td>https://x.com/Patrici99978101/status/190437032...</td>
+<td>@DanielNoboaOk Andate a la puta Madre Narcoban...</td>
+<td>True</td>
+<td>DanielNoboaOk</td>
+<td>2025-03-25 03:10:00</td>
+<td>1395569809413263104</td>
+<td>Patricio Andrade F.</td>
+<td>Patrici99978101</td>
+<td>False</td>
+<td>...</td>
+<td>2025-03-24 02:51:52</td>
+<td>1458.133333</td>
+<td>1324</td>
+<td>1</td>
+<td>0</td>
+<td>131</td>
+<td>False</td>
+<td>-0.1</td>
+<td>negativo</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">54939</th>
+<td>1906874243511369728</td>
+<td>https://x.com/CondeLoor/status/190687424351136...</td>
+<td>@DanielNoboaOk Es increíble q en el hospital d...</td>
+<td>True</td>
+<td>DanielNoboaOk</td>
+<td>2025-04-01 01:00:00</td>
+<td>1059842395720896384</td>
+<td>Ruth Conde Loor</td>
+<td>CondeLoor</td>
+<td>False</td>
+<td>...</td>
+<td>2025-03-31 23:19:31</td>
+<td>100.483333</td>
+<td>2251</td>
+<td>1</td>
+<td>0</td>
+<td>206</td>
+<td>True</td>
+<td>-1.0</td>
+<td>negativo</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+<p>5 rows × 28 columns</p>
+</div>
+</div>
+</div>
+</section>
+<section id="limpieza-del-twit" class="level1">
+<h1>Limpieza del twit</h1>
+<p>Eliminamos menciones</p>
+<div id="f65dd4d5" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df_balanced[<span class="st">'content'</span>] <span class="op">=</span> df_balanced[<span class="st">'content'</span>].<span class="bu">str</span>.replace(<span class="vs">r'@</span><span class="dv">\w</span><span class="op">+</span><span class="vs">'</span>, <span class="st">''</span>, regex<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Eliinamos emojis</p>
+<div id="87cd7234" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> emoji</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>df_balanced[<span class="st">'content'</span>] <span class="op">=</span> df_balanced[<span class="st">'content'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: emoji.replace_emoji(x, replace<span class="op">=</span><span class="st">''</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="seleccion-de-x-e-y" class="level1">
+<h1>Seleccion de X e y</h1>
+<div id="e8622072" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>X_text <span class="op">=</span> df_balanced[<span class="st">'content'</span>]</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df_balanced[<span class="st">'sentiment_encoded'</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="train-test" class="level1">
+<h1>Train test</h1>
+<div id="5ef15681" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>X_train,X_test,y_train,y_test <span class="op">=</span> train_test_split(X_text,y,test_size<span class="op">=</span><span class="fl">0.2</span>,random_state<span class="op">=</span><span class="dv">42</span>,stratify<span class="op">=</span>y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="vectorizacion-de-text" class="level1">
+<h1>Vectorizacion de text</h1>
+<div id="d8c7c35f" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>stopwords <span class="op">=</span> stopwords.words(<span class="st">'spanish'</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>vectorizer <span class="op">=</span> CountVectorizer(stop_words<span class="op">=</span>stopwords) <span class="co">#TfidfTransformer()</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co">#vectorizer = TfidfTransformer(stop_words=stopwords)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="definición-del-pipeline" class="level1">
+<h1>Definición del Pipeline</h1>
+<div id="113e6aad" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> MultinomialNB()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="0f2dc887" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>pipeline <span class="op">=</span> Pipeline(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    [</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>        (<span class="st">'vectorizacion'</span>,vectorizer),</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>        (<span class="st">'classifier'</span>,model)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="fit-del-modelo" class="level1">
+<h1>Fit del modelo</h1>
+<div id="bd875b50" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>pipeline.fit(X_train,y_train)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="94">
+<style>#sk-container-id-6 {
+  /* Definition of color scheme common for light and dark mode */
+  --sklearn-color-text: #000;
+  --sklearn-color-text-muted: #666;
+  --sklearn-color-line: gray;
+  /* Definition of color scheme for unfitted estimators */
+  --sklearn-color-unfitted-level-0: #fff5e6;
+  --sklearn-color-unfitted-level-1: #f6e4d2;
+  --sklearn-color-unfitted-level-2: #ffe0b3;
+  --sklearn-color-unfitted-level-3: chocolate;
+  /* Definition of color scheme for fitted estimators */
+  --sklearn-color-fitted-level-0: #f0f8ff;
+  --sklearn-color-fitted-level-1: #d4ebff;
+  --sklearn-color-fitted-level-2: #b3dbfd;
+  --sklearn-color-fitted-level-3: cornflowerblue;
+
+  /* Specific color for light theme */
+  --sklearn-color-text-on-default-background: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, black)));
+  --sklearn-color-background: var(--sg-background-color, var(--theme-background, var(--jp-layout-color0, white)));
+  --sklearn-color-border-box: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, black)));
+  --sklearn-color-icon: #696969;
+
+  @media (prefers-color-scheme: dark) {
+    /* Redefinition of color scheme for dark theme */
+    --sklearn-color-text-on-default-background: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, white)));
+    --sklearn-color-background: var(--sg-background-color, var(--theme-background, var(--jp-layout-color0, #111)));
+    --sklearn-color-border-box: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, white)));
+    --sklearn-color-icon: #878787;
+  }
+}
+
+#sk-container-id-6 {
+  color: var(--sklearn-color-text);
+}
+
+#sk-container-id-6 pre {
+  padding: 0;
+}
+
+#sk-container-id-6 input.sk-hidden--visually {
+  border: 0;
+  clip: rect(1px 1px 1px 1px);
+  clip: rect(1px, 1px, 1px, 1px);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+#sk-container-id-6 div.sk-dashed-wrapped {
+  border: 1px dashed var(--sklearn-color-line);
+  margin: 0 0.4em 0.5em 0.4em;
+  box-sizing: border-box;
+  padding-bottom: 0.4em;
+  background-color: var(--sklearn-color-background);
+}
+
+#sk-container-id-6 div.sk-container {
+  /* jupyter's `normalize.less` sets `[hidden] { display: none; }`
+     but bootstrap.min.css set `[hidden] { display: none !important; }`
+     so we also need the `!important` here to be able to override the
+     default hidden behavior on the sphinx rendered scikit-learn.org.
+     See: https://github.com/scikit-learn/scikit-learn/issues/21755 */
+  display: inline-block !important;
+  position: relative;
+}
+
+#sk-container-id-6 div.sk-text-repr-fallback {
+  display: none;
+}
+
+div.sk-parallel-item,
+div.sk-serial,
+div.sk-item {
+  /* draw centered vertical line to link estimators */
+  background-image: linear-gradient(var(--sklearn-color-text-on-default-background), var(--sklearn-color-text-on-default-background));
+  background-size: 2px 100%;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+/* Parallel-specific style estimator block */
+
+#sk-container-id-6 div.sk-parallel-item::after {
+  content: "";
+  width: 100%;
+  border-bottom: 2px solid var(--sklearn-color-text-on-default-background);
+  flex-grow: 1;
+}
+
+#sk-container-id-6 div.sk-parallel {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  background-color: var(--sklearn-color-background);
+  position: relative;
+}
+
+#sk-container-id-6 div.sk-parallel-item {
+  display: flex;
+  flex-direction: column;
+}
+
+#sk-container-id-6 div.sk-parallel-item:first-child::after {
+  align-self: flex-end;
+  width: 50%;
+}
+
+#sk-container-id-6 div.sk-parallel-item:last-child::after {
+  align-self: flex-start;
+  width: 50%;
+}
+
+#sk-container-id-6 div.sk-parallel-item:only-child::after {
+  width: 0;
+}
+
+/* Serial-specific style estimator block */
+
+#sk-container-id-6 div.sk-serial {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--sklearn-color-background);
+  padding-right: 1em;
+  padding-left: 1em;
+}
+
+
+/* Toggleable style: style used for estimator/Pipeline/ColumnTransformer box that is
+clickable and can be expanded/collapsed.
+- Pipeline and ColumnTransformer use this feature and define the default style
+- Estimators will overwrite some part of the style using the `sk-estimator` class
+*/
+
+/* Pipeline and ColumnTransformer style (default) */
+
+#sk-container-id-6 div.sk-toggleable {
+  /* Default theme specific background. It is overwritten whether we have a
+  specific estimator or a Pipeline/ColumnTransformer */
+  background-color: var(--sklearn-color-background);
+}
+
+/* Toggleable label */
+#sk-container-id-6 label.sk-toggleable__label {
+  cursor: pointer;
+  display: flex;
+  width: 100%;
+  margin-bottom: 0;
+  padding: 0.5em;
+  box-sizing: border-box;
+  text-align: center;
+  align-items: start;
+  justify-content: space-between;
+  gap: 0.5em;
+}
+
+#sk-container-id-6 label.sk-toggleable__label .caption {
+  font-size: 0.6rem;
+  font-weight: lighter;
+  color: var(--sklearn-color-text-muted);
+}
+
+#sk-container-id-6 label.sk-toggleable__label-arrow:before {
+  /* Arrow on the left of the label */
+  content: "▸";
+  float: left;
+  margin-right: 0.25em;
+  color: var(--sklearn-color-icon);
+}
+
+#sk-container-id-6 label.sk-toggleable__label-arrow:hover:before {
+  color: var(--sklearn-color-text);
+}
+
+/* Toggleable content - dropdown */
+
+#sk-container-id-6 div.sk-toggleable__content {
+  display: none;
+  text-align: left;
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-0);
+}
+
+#sk-container-id-6 div.sk-toggleable__content.fitted {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-0);
+}
+
+#sk-container-id-6 div.sk-toggleable__content pre {
+  margin: 0.2em;
+  border-radius: 0.25em;
+  color: var(--sklearn-color-text);
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-0);
+}
+
+#sk-container-id-6 div.sk-toggleable__content.fitted pre {
+  /* unfitted */
+  background-color: var(--sklearn-color-fitted-level-0);
+}
+
+#sk-container-id-6 input.sk-toggleable__control:checked~div.sk-toggleable__content {
+  /* Expand drop-down */
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+#sk-container-id-6 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {
+  content: "▾";
+}
+
+/* Pipeline/ColumnTransformer-specific style */
+
+#sk-container-id-6 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {
+  color: var(--sklearn-color-text);
+  background-color: var(--sklearn-color-unfitted-level-2);
+}
+
+#sk-container-id-6 div.sk-label.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+  background-color: var(--sklearn-color-fitted-level-2);
+}
+
+/* Estimator-specific style */
+
+/* Colorize estimator box */
+#sk-container-id-6 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-2);
+}
+
+#sk-container-id-6 div.sk-estimator.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-2);
+}
+
+#sk-container-id-6 div.sk-label label.sk-toggleable__label,
+#sk-container-id-6 div.sk-label label {
+  /* The background is the default theme color */
+  color: var(--sklearn-color-text-on-default-background);
+}
+
+/* On hover, darken the color of the background */
+#sk-container-id-6 div.sk-label:hover label.sk-toggleable__label {
+  color: var(--sklearn-color-text);
+  background-color: var(--sklearn-color-unfitted-level-2);
+}
+
+/* Label box, darken color on hover, fitted */
+#sk-container-id-6 div.sk-label.fitted:hover label.sk-toggleable__label.fitted {
+  color: var(--sklearn-color-text);
+  background-color: var(--sklearn-color-fitted-level-2);
+}
+
+/* Estimator label */
+
+#sk-container-id-6 div.sk-label label {
+  font-family: monospace;
+  font-weight: bold;
+  display: inline-block;
+  line-height: 1.2em;
+}
+
+#sk-container-id-6 div.sk-label-container {
+  text-align: center;
+}
+
+/* Estimator-specific */
+#sk-container-id-6 div.sk-estimator {
+  font-family: monospace;
+  border: 1px dotted var(--sklearn-color-border-box);
+  border-radius: 0.25em;
+  box-sizing: border-box;
+  margin-bottom: 0.5em;
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-0);
+}
+
+#sk-container-id-6 div.sk-estimator.fitted {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-0);
+}
+
+/* on hover */
+#sk-container-id-6 div.sk-estimator:hover {
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-2);
+}
+
+#sk-container-id-6 div.sk-estimator.fitted:hover {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-2);
+}
+
+/* Specification for estimator info (e.g. "i" and "?") */
+
+/* Common style for "i" and "?" */
+
+.sk-estimator-doc-link,
+a:link.sk-estimator-doc-link,
+a:visited.sk-estimator-doc-link {
+  float: right;
+  font-size: smaller;
+  line-height: 1em;
+  font-family: monospace;
+  background-color: var(--sklearn-color-background);
+  border-radius: 1em;
+  height: 1em;
+  width: 1em;
+  text-decoration: none !important;
+  margin-left: 0.5em;
+  text-align: center;
+  /* unfitted */
+  border: var(--sklearn-color-unfitted-level-1) 1pt solid;
+  color: var(--sklearn-color-unfitted-level-1);
+}
+
+.sk-estimator-doc-link.fitted,
+a:link.sk-estimator-doc-link.fitted,
+a:visited.sk-estimator-doc-link.fitted {
+  /* fitted */
+  border: var(--sklearn-color-fitted-level-1) 1pt solid;
+  color: var(--sklearn-color-fitted-level-1);
+}
+
+/* On hover */
+div.sk-estimator:hover .sk-estimator-doc-link:hover,
+.sk-estimator-doc-link:hover,
+div.sk-label-container:hover .sk-estimator-doc-link:hover,
+.sk-estimator-doc-link:hover {
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-3);
+  color: var(--sklearn-color-background);
+  text-decoration: none;
+}
+
+div.sk-estimator.fitted:hover .sk-estimator-doc-link.fitted:hover,
+.sk-estimator-doc-link.fitted:hover,
+div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
+.sk-estimator-doc-link.fitted:hover {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-3);
+  color: var(--sklearn-color-background);
+  text-decoration: none;
+}
+
+/* Span, style for the box shown on hovering the info icon */
+.sk-estimator-doc-link span {
+  display: none;
+  z-index: 9999;
+  position: relative;
+  font-weight: normal;
+  right: .2ex;
+  padding: .5ex;
+  margin: .5ex;
+  width: min-content;
+  min-width: 20ex;
+  max-width: 50ex;
+  color: var(--sklearn-color-text);
+  box-shadow: 2pt 2pt 4pt #999;
+  /* unfitted */
+  background: var(--sklearn-color-unfitted-level-0);
+  border: .5pt solid var(--sklearn-color-unfitted-level-3);
+}
+
+.sk-estimator-doc-link.fitted span {
+  /* fitted */
+  background: var(--sklearn-color-fitted-level-0);
+  border: var(--sklearn-color-fitted-level-3);
+}
+
+.sk-estimator-doc-link:hover span {
+  display: block;
+}
+
+/* "?"-specific style due to the `<a>` HTML tag */
+
+#sk-container-id-6 a.estimator_doc_link {
+  float: right;
+  font-size: 1rem;
+  line-height: 1em;
+  font-family: monospace;
+  background-color: var(--sklearn-color-background);
+  border-radius: 1rem;
+  height: 1rem;
+  width: 1rem;
+  text-decoration: none;
+  /* unfitted */
+  color: var(--sklearn-color-unfitted-level-1);
+  border: var(--sklearn-color-unfitted-level-1) 1pt solid;
+}
+
+#sk-container-id-6 a.estimator_doc_link.fitted {
+  /* fitted */
+  border: var(--sklearn-color-fitted-level-1) 1pt solid;
+  color: var(--sklearn-color-fitted-level-1);
+}
+
+/* On hover */
+#sk-container-id-6 a.estimator_doc_link:hover {
+  /* unfitted */
+  background-color: var(--sklearn-color-unfitted-level-3);
+  color: var(--sklearn-color-background);
+  text-decoration: none;
+}
+
+#sk-container-id-6 a.estimator_doc_link.fitted:hover {
+  /* fitted */
+  background-color: var(--sklearn-color-fitted-level-3);
+}
+
+.estimator-table summary {
+    padding: .5rem;
+    font-family: monospace;
+    cursor: pointer;
+}
+
+.estimator-table details[open] {
+    padding-left: 0.1rem;
+    padding-right: 0.1rem;
+    padding-bottom: 0.3rem;
+}
+
+.estimator-table .parameters-table {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.estimator-table .parameters-table tr:nth-child(odd) {
+    background-color: #fff;
+}
+
+.estimator-table .parameters-table tr:nth-child(even) {
+    background-color: #f6f6f6;
+}
+
+.estimator-table .parameters-table tr:hover {
+    background-color: #e0e0e0;
+}
+
+.estimator-table table td {
+    border: 1px solid rgba(106, 105, 104, 0.232);
+}
+
+.user-set td {
+    color:rgb(255, 94, 0);
+    text-align: left;
+}
+
+.user-set td.value pre {
+    color:rgb(255, 94, 0) !important;
+    background-color: transparent !important;
+}
+
+.default td {
+    color: black;
+    text-align: left;
+}
+
+.user-set td i,
+.default td i {
+    color: black;
+}
+
+.copy-paste-icon {
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0NDggNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNy4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjUgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZD0iTTIwOCAwTDMzMi4xIDBjMTIuNyAwIDI0LjkgNS4xIDMzLjkgMTQuMWw2Ny45IDY3LjljOSA5IDE0LjEgMjEuMiAxNC4xIDMzLjlMNDQ4IDMzNmMwIDI2LjUtMjEuNSA0OC00OCA0OGwtMTkyIDBjLTI2LjUgMC00OC0yMS41LTQ4LTQ4bDAtMjg4YzAtMjYuNSAyMS41LTQ4IDQ4LTQ4ek00OCAxMjhsODAgMCAwIDY0LTY0IDAgMCAyNTYgMTkyIDAgMC0zMiA2NCAwIDAgNDhjMCAyNi41LTIxLjUgNDgtNDggNDhMNDggNTEyYy0yNi41IDAtNDgtMjEuNS00OC00OEwwIDE3NmMwLTI2LjUgMjEuNS00OCA0OC00OHoiLz48L3N2Zz4=);
+    background-repeat: no-repeat;
+    background-size: 14px 14px;
+    background-position: 0;
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+}
+</style><div id="sk-container-id-6" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>Pipeline(steps=[('vectorizacion',
+                 CountVectorizer(stop_words=['de', 'la', 'que', 'el', 'en', 'y',
+                                             'a', 'los', 'del', 'se', 'las',
+                                             'por', 'un', 'para', 'con', 'no',
+                                             'una', 'su', 'al', 'lo', 'como',
+                                             'más', 'pero', 'sus', 'le', 'ya',
+                                             'o', 'este', 'sí', 'porque', ...])),
+                ('classifier', MultinomialNB())])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br>On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden=""><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-16" type="checkbox"><label for="sk-estimator-id-16" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>Pipeline</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.7/modules/generated/sklearn.pipeline.Pipeline.html">?<span>Documentation for Pipeline</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
+        <div class="estimator-table">
+            <details>
+                <summary>Parameters</summary>
+                
+<table class="parameters-table caption-top table table-sm table-striped small">
+<tbody>
+<tr class="user-set odd">
+<td><em></em></td>
+<td class="param">steps&nbsp;</td>
+<td class="value">[('vectorizacion', ...), ('classifier', ...)]</td>
+</tr>
+<tr class="default even">
+<td><em></em></td>
+<td class="param">transform_input&nbsp;</td>
+<td class="value">None</td>
+</tr>
+<tr class="default odd">
+<td><em></em></td>
+<td class="param">memory&nbsp;</td>
+<td class="value">None</td>
+</tr>
+<tr class="default even">
+<td><em></em></td>
+<td class="param">verbose&nbsp;</td>
+<td class="value">False</td>
+</tr>
+</tbody>
+</table>
+
+            </details>
+        </div>
+    </div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-17" type="checkbox"><label for="sk-estimator-id-17" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>CountVectorizer</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.7/modules/generated/sklearn.feature_extraction.text.CountVectorizer.html">?<span>Documentation for CountVectorizer</span></a></div></label><div class="sk-toggleable__content fitted" data-param-prefix="vectorizacion__">
+        <div class="estimator-table">
+            <details>
+                <summary>Parameters</summary>
+                
+<table class="parameters-table caption-top table table-sm table-striped small">
+<tbody>
+<tr class="default odd">
+<td><em></em></td>
+<td class="param">input&nbsp;</td>
+<td class="value">'content'</td>
+</tr>
+<tr class="default even">
+<td><em></em></td>
+<td class="param">encoding&nbsp;</td>
+<td class="value">'utf-8'</td>
+</tr>
+<tr class="default odd">
+<td><em></em></td>
+<td class="param">decode_error&nbsp;</td>
+<td class="value">'strict'</td>
+</tr>
+<tr class="default even">
+<td><em></em></td>
+<td class="param">strip_accents&nbsp;</td>
+<td class="value">None</td>
+</tr>
+<tr class="default odd">
+<td><em></em></td>
+<td class="param">lowercase&nbsp;</td>
+<td class="value">True</td>
+</tr>
+<tr class="default even">
+<td><em></em></td>
+<td class="param">preprocessor&nbsp;</td>
+<td class="value">None</td>
+</tr>
+<tr class="default odd">
+<td><em></em></td>
+<td class="param">tokenizer&nbsp;</td>
+<td class="value">None</td>
+</tr>
+<tr class="user-set even">
+<td><em></em></td>
+<td class="param">stop_words&nbsp;</td>
+<td class="value">['de', 'la', ...]</td>
+</tr>
+<tr class="default odd">
+<td><em></em></td>
+<td class="param">token_pattern&nbsp;</td>
+<td class="value">'(?u)\\b\\w\\w+\\b'</td>
+</tr>
+<tr class="default even">
+<td><em></em></td>
+<td class="param">ngram_range&nbsp;</td>
+<td class="value">(1, ...)</td>
+</tr>
+<tr class="default odd">
+<td><em></em></td>
+<td class="param">analyzer&nbsp;</td>
+<td class="value">'word'</td>
+</tr>
+<tr class="default even">
+<td><em></em></td>
+<td class="param">max_df&nbsp;</td>
+<td class="value">1.0</td>
+</tr>
+<tr class="default odd">
+<td><em></em></td>
+<td class="param">min_df&nbsp;</td>
+<td class="value">1</td>
+</tr>
+<tr class="default even">
+<td><em></em></td>
+<td class="param">max_features&nbsp;</td>
+<td class="value">None</td>
+</tr>
+<tr class="default odd">
+<td><em></em></td>
+<td class="param">vocabulary&nbsp;</td>
+<td class="value">None</td>
+</tr>
+<tr class="default even">
+<td><em></em></td>
+<td class="param">binary&nbsp;</td>
+<td class="value">False</td>
+</tr>
+<tr class="default odd">
+<td><em></em></td>
+<td class="param">dtype&nbsp;</td>
+<td class="value">&lt;class 'numpy.int64'&gt;</td>
+</tr>
+</tbody>
+</table>
+
+            </details>
+        </div>
+    </div></div></div><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-18" type="checkbox"><label for="sk-estimator-id-18" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>MultinomialNB</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.7/modules/generated/sklearn.naive_bayes.MultinomialNB.html">?<span>Documentation for MultinomialNB</span></a></div></label><div class="sk-toggleable__content fitted" data-param-prefix="classifier__">
+        <div class="estimator-table">
+            <details>
+                <summary>Parameters</summary>
+                
+<table class="parameters-table caption-top table table-sm table-striped small">
+<tbody>
+<tr class="default odd">
+<td><em></em></td>
+<td class="param">alpha&nbsp;</td>
+<td class="value">1.0</td>
+</tr>
+<tr class="default even">
+<td><em></em></td>
+<td class="param">force_alpha&nbsp;</td>
+<td class="value">True</td>
+</tr>
+<tr class="default odd">
+<td><em></em></td>
+<td class="param">fit_prior&nbsp;</td>
+<td class="value">True</td>
+</tr>
+<tr class="default even">
+<td><em></em></td>
+<td class="param">class_prior&nbsp;</td>
+<td class="value">None</td>
+</tr>
+</tbody>
+</table>
+
+            </details>
+        </div>
+    </div></div></div></div></div></div></div><script>function copyToClipboard(text, element) {
+    // Get the parameter prefix from the closest toggleable content
+    const toggleableContent = element.closest('.sk-toggleable__content');
+    const paramPrefix = toggleableContent ? toggleableContent.dataset.paramPrefix : '';
+    const fullParamName = paramPrefix ? `${paramPrefix}${text}` : text;
+
+    const originalStyle = element.style;
+    const computedStyle = window.getComputedStyle(element);
+    const originalWidth = computedStyle.width;
+    const originalHTML = element.innerHTML.replace('Copied!', '');
+
+    navigator.clipboard.writeText(fullParamName)
+        .then(() => {
+            element.style.width = originalWidth;
+            element.style.color = 'green';
+            element.innerHTML = "Copied!";
+
+            setTimeout(() => {
+                element.innerHTML = originalHTML;
+                element.style = originalStyle;
+            }, 2000);
+        })
+        .catch(err => {
+            console.error('Failed to copy:', err);
+            element.style.color = 'red';
+            element.innerHTML = "Failed!";
+            setTimeout(() => {
+                element.innerHTML = originalHTML;
+                element.style = originalStyle;
+            }, 2000);
+        });
+    return false;
+}
+
+document.querySelectorAll('.fa-regular.fa-copy').forEach(function(element) {
+    const toggleableContent = element.closest('.sk-toggleable__content');
+    const paramPrefix = toggleableContent ? toggleableContent.dataset.paramPrefix : '';
+    const paramName = element.parentElement.nextElementSibling.textContent.trim();
+    const fullParamName = paramPrefix ? `${paramPrefix}${paramName}` : paramName;
+
+    element.setAttribute('title', fullParamName);
+});
+</script>
+</div>
+</div>
+</section>
+<section id="predicción" class="level1">
+<h1>Predicción</h1>
+<pre class="atnhhfyz|"><code>y_pred = pipeline.predict(X_test)
+</code></pre>
+</section>
+<section id="reporte-de-clasificación" class="level1">
+<h1>Reporte de clasificación</h1>
+<div id="7847fef1" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> pipeline.predict(X_test)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Reporte de classificacion</span><span class="ch">\n</span><span class="st">"</span>,classification_report(y_test,y_pred,target_names<span class="op">=</span>df_balanced[<span class="st">'sentiment_label'</span>].unique()))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reporte de classificacion
+               precision    recall  f1-score   support
+
+    negativo       0.68      0.95      0.79       499
+     neutral       0.88      0.39      0.55       499
+    positivo       0.76      0.88      0.82       500
+
+    accuracy                           0.74      1498
+   macro avg       0.77      0.74      0.72      1498
+weighted avg       0.77      0.74      0.72      1498
+</code></pre>
+</div>
+</div>
+</section>
+<section id="matriz-de-confusión" class="level1">
+<h1>Matriz de confusión</h1>
+<div id="44672a99" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>ConfusionMatrixDisplay(confusion_matrix(y_test,y_pred),display_labels<span class="op">=</span>df_balanced[<span class="st">'sentiment_label'</span>].unique()).plot()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="LAB2_files/figure-html/cell-18-output-1.png" width="554" height="429" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

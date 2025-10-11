@@ -4,14 +4,27 @@ project:
  
 website:
   title: "Machine Learning"
-  navbar:
-    left:
-      - href: index.qmd
-        text: Home
-      - href: eda.qmd
-        text: EDA
-      - href: MIDTER.qmd
-        text: MIDTER
+  sidebar:
+    style: "docked"
+    search: true
+    contents:
+      - text: "Welcome"
+        href: index.qmd
+      - section: "Introduction to ML"
+        contents:
+          - eda.qmd
+      - section: "Classification"
+        href: metrics.qmd
+        contents:
+          - categorical_encoding.qmd
+          - categorical_pipeline.qmd
+      - section: "Natural Language Processing (NLP)"
+        contents:
+          - ml_text.qmd
+          - bagofwords.qmd
+          - tfidf.qmd
+          - text_classification.qmd
+          - LAB2.qmd
 
 
  

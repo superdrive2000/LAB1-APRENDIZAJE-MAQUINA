@@ -1,0 +1,110 @@
+---
+title: "Categorical pipeline"
+author: "Jesus Quinga"  
+format: "html"
+code-fold: false    
+#format:
+#    html:
+#        embed-resources: true
+
+#AQUI PONER EL PATH HACIA SU AMBIENTE VIRTUAL
+execute:
+  python: C:/Users/Lenovo i5/Documents/MAESTRIA IA YACHAY TECH/APRENDIZAJE DE MAQUINA/SEMANA 1/.venv/Scripts/python.exe
+---
+
+
+
+```{python}
+import pandas as pd
+import requests
+# Natural Language Toolkit
+import nltk
+# downloading some additional packages and corpora
+nltk.download('punkt_tab') # necessary for tokenization
+nltk.download('wordnet') # necessary for lemmatization
+nltk.download('stopwords') # necessary for removal of stop words
+nltk.download('averaged_perceptron_tagger_eng') # necessary for POS tagging
+nltk.download('maxent_ne_chunker' ) # necessary for entity extraction
+nltk.download('omw-1.4') # necessary for lemmatization
+nltk.download('words')
+```
+
+
+# Cargar Data
+
+
+```{python}
+url = "https://raw.githubusercontent.com/erickedu85/dataset/master/story.txt"
+r = requests.get(url)
+r.encoding="utf-8"
+
+story = r.text
+#story
+```
+
+# Tokenización
+
+
+```{python}
+from nltk import word_tokenize, pos_tag
+
+words = word_tokenize(story)
+
+words[:20]
+```
+
+# Steamming y Lemmatización
+
+
+```{python}
+from nltk.stem import PorterStemmer as stemmer
+from nltk.stem import WordNetLemmatizer as lemmatizer
+from nltk.corpus import  wordnet
+
+
+palabra = "Change"
+
+print("PALABRA: ",palabra)
+
+#stemming
+print("STEAMMING: ",stemmer().stem(palabra))
+
+#lemmatizado
+
+print("LEMMATIZATION: ",lemmatizer().lemmatize(palabra, pos=wordnet.VERB))
+
+```
+
+# PARTOF SPEEACH - POS TAG
+
+
+```{python}
+from nltk import pos_tag
+pos = pos_tag(words)
+pos[:20]
+
+```
+
+# STOP WORDS
+
+
+```{python}
+from nltk.corpus import stopwords as stop
+
+stopwords = stop.words("english")
+stopwords
+
+
+```
+
+# STOP WORDS IN STORY
+
+```{python}
+tokens = nltk.word_tokenize(story.lower())
+
+lettertokens = [word for word in tokens if word.isalpha()]
+
+without_stopwords = [word for word in lettertokens if word not in stopwords]
+```
+
+
