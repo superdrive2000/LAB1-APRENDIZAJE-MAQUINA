@@ -27,10 +27,14 @@ from sklearn.feature_extraction.text import CountVectorizer
 import nltk
 from nltk.corpus import stopwords
 
+from nltk import word_tokenize # tokenizacion
+from nltk import pos_tag #lematizacion
+from nltk.stem import WordNetLemmatizer
+from nltk.corpus import wordnet
+
 nltk.download('stopwords') # necessary for removal of stop words
 nltk.download('wordnet') # necessary for lemmatization
 from sklearn.preprocessing import LabelEncoder
-
 
 ```
 
@@ -138,7 +142,53 @@ Eliminamos emojis
 import emoji
 
 df_balanced['content'] = df_balanced['content'].apply(lambda x: emoji.replace_emoji(x, replace=''))
-df_balanced
+
+```
+
+Funcion de limpieza
+```{python}
+
+lemmatizer = WordNetLemmatizer()
+
+
+def get_wordnet_pos(treebank_tag):
+    # print("treebank_tag",treebank_tag)
+    if treebank_tag.startswith('J'):
+        return wordnet.ADJ
+    elif treebank_tag.startswith('V'):
+        return wordnet.VERB
+    elif treebank_tag.startswith('N'):
+        return wordnet.NOUN
+    elif treebank_tag.startswith('R'):
+        return wordnet.ADV
+    else:
+        return wordnet.NOUN 
+
+
+def preprocessing_document(doc):
+    #1 transformar en minusculas
+    doc = doc.lower()
+    
+    #2 tokenizar
+    tokens = word_tokenize(doc)
+
+    #3 obtener lematizacion con etiqueta POS
+    tagged_tokens = pos_tag(tokens)
+
+    #ELIMINAR LAS STOP-WORDS EN CASO QUE NO USE EL PARAMETRO STOPWORD EN LA VECTORIZACION
+
+    #4 filtrar numeros
+    filtered_tokens = [(word,pos) for (word,pos) in tagged_tokens if word.isalpha()]
+
+    #5 Lematizacion usando el pos
+    lemmatized_words = [lemmatizer.lemmatize(word,get_wordnet_pos(pos)) for word, pos in filtered_tokens]
+
+    return " ".join(lemmatized_words)
+```
+
+```{python}
+df_balanced['content'] = [preprocessing_document(doc) for doc in df_balanced['content']]
+df_balanced['content']
 ```
 
 # Seleccion de X e y
