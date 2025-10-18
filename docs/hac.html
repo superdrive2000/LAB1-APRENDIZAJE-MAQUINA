@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Jesus Quinga">
 
-<title>Bag of words – Machine Learning</title>
+<title>Categorical pipeline – Machine Learning</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -106,7 +105,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
+
+
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
 
 
 </head>
@@ -120,7 +122,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ml_text.html">Natural Language Processing (NLP)</a></li><li class="breadcrumb-item"><a href="./bagofwords.html">Bag of words</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Categorical pipeline</li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -204,7 +206,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./bagofwords.html" class="sidebar-item-text sidebar-link active">
+  <a href="./bagofwords.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Bag of words</span></a>
   </div>
 </li>
@@ -235,39 +237,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#importar-librerías" id="toc-importar-librerías" class="nav-link active" data-scroll-target="#importar-librerías">Importar librerías</a></li>
-  <li><a href="#dataset-ejemplo-corpus" id="toc-dataset-ejemplo-corpus" class="nav-link" data-scroll-target="#dataset-ejemplo-corpus">Dataset ejemplo Corpus</a></li>
-  <li><a href="#bow---countvectorizer" id="toc-bow---countvectorizer" class="nav-link" data-scroll-target="#bow---countvectorizer">BoW - CountVectorizer()</a>
+  <li><a href="#importamos-librerias" id="toc-importamos-librerias" class="nav-link active" data-scroll-target="#importamos-librerias">Importamos librerias</a></li>
+  <li><a href="#cargar-dataset" id="toc-cargar-dataset" class="nav-link" data-scroll-target="#cargar-dataset">Cargar dataset</a></li>
+  <li><a href="#pipeline" id="toc-pipeline" class="nav-link" data-scroll-target="#pipeline">Pipeline</a></li>
+  <li><a href="#fit" id="toc-fit" class="nav-link" data-scroll-target="#fit">Fit</a></li>
+  <li><a href="#visualizar-los-clusters" id="toc-visualizar-los-clusters" class="nav-link" data-scroll-target="#visualizar-los-clusters">Visualizar los clusters</a>
   <ul class="collapse">
-  <li><a href="#ejemplo-de-función-de-limpieza" id="toc-ejemplo-de-función-de-limpieza" class="nav-link" data-scroll-target="#ejemplo-de-función-de-limpieza">Ejemplo de función de limpieza</a></li>
+  <li><a href="#creación-de-dataframe-para-la-vizualización" id="toc-creación-de-dataframe-para-la-vizualización" class="nav-link" data-scroll-target="#creación-de-dataframe-para-la-vizualización">Creación de dataframe para la vizualización</a></li>
   </ul></li>
-  <li><a href="#preprocesamiento-manual" id="toc-preprocesamiento-manual" class="nav-link" data-scroll-target="#preprocesamiento-manual">Preprocesamiento manual</a>
-  <ul class="collapse">
-  <li><a href="#fit_transform" id="toc-fit_transform" class="nav-link" data-scroll-target="#fit_transform">Fit_transform</a></li>
-  <li><a href="#obtener-las-palabras-finales" id="toc-obtener-las-palabras-finales" class="nav-link" data-scroll-target="#obtener-las-palabras-finales">Obtener las palabras finales</a></li>
-  </ul></li>
-  <li><a href="#matriz-de-ocurrencias-conteos" id="toc-matriz-de-ocurrencias-conteos" class="nav-link" data-scroll-target="#matriz-de-ocurrencias-conteos">Matriz de ocurrencias (conteos)</a></li>
+  <li><a href="#visualización" id="toc-visualización" class="nav-link" data-scroll-target="#visualización">Visualización</a></li>
+  <li><a href="#visualizar-dendogram" id="toc-visualizar-dendogram" class="nav-link" data-scroll-target="#visualizar-dendogram">Visualizar dendogram</a></li>
+  <li><a href="#dendograma" id="toc-dendograma" class="nav-link" data-scroll-target="#dendograma">Dendograma</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ml_text.html">Natural Language Processing (NLP)</a></li><li class="breadcrumb-item"><a href="./bagofwords.html">Bag of words</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Bag of words</h1>
+<h1 class="title">Categorical pipeline</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Jesus Quinga </p>
-          </div>
-  </div>
     
   
     
@@ -278,214 +273,253 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="importar-librerías" class="level1">
-<h1>Importar librerías</h1>
-<div id="f8f186aa" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> CountVectorizer <span class="co">#BoW</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> nltk</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk.corpus <span class="im">import</span> stopwords</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk <span class="im">import</span> word_tokenize <span class="co"># tokenizacion</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk <span class="im">import</span> pos_tag <span class="co">#lematizacion</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk.stem <span class="im">import</span> WordNetLemmatizer</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk.corpus <span class="im">import</span> wordnet</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>lemmatizer <span class="op">=</span> WordNetLemmatizer()</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>nltk.download(<span class="st">'stopwords'</span>) <span class="co"># necessary for removal of stop words</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>nltk.download(<span class="st">'wordnet'</span>) <span class="co"># necessary for lemmatization</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>[nltk_data] Downloading package stopwords to C:\Users\Lenovo
-[nltk_data]     i5\AppData\Roaming\nltk_data...
-[nltk_data]   Package stopwords is already up-to-date!
-[nltk_data] Downloading package wordnet to C:\Users\Lenovo
-[nltk_data]     i5\AppData\Roaming\nltk_data...
-[nltk_data]   Package wordnet is already up-to-date!</code></pre>
+<section id="importamos-librerias" class="level1">
+<h1>Importamos librerias</h1>
+<div id="61ebb1fc" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> altair <span class="im">as</span> alt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_iris</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> AgglomerativeClustering</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline    </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.cluster.hierarchy <span class="im">import</span> dendrogram,linkage</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="1">
-<pre><code>True</code></pre>
+</section>
+<section id="cargar-dataset" class="level1">
+<h1>Cargar dataset</h1>
+<div id="a7b824bd" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>iris <span class="op">=</span> load_iris()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>X<span class="op">=</span> pd.DataFrame(iris.data[<span class="dv">0</span>:<span class="dv">50</span>],columns<span class="op">=</span>iris.feature_names)[[<span class="st">'sepal length (cm)'</span>,<span class="st">'sepal width (cm)'</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="pipeline" class="level1">
+<h1>Pipeline</h1>
+<div id="a3b3cb0f" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pipeline <span class="op">=</span> Pipeline([</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'scaler'</span>,StandardScaler()),</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'agglo'</span>,AgglomerativeClustering(n_clusters<span class="op">=</span><span class="dv">2</span>))</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="fit" class="level1">
+<h1>Fit</h1>
+<div id="6053ac75" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> pipeline.fit_predict(X)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>labels</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>array([0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+       1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0,
+       0, 1, 0, 1, 0, 0])</code></pre>
 </div>
 </div>
 </section>
-<section id="dataset-ejemplo-corpus" class="level1">
-<h1>Dataset ejemplo Corpus</h1>
-<div id="96b8e063" class="cell" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>corpus <span class="op">=</span> [</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Machine learning is all fun 1990 :) :( 🙁"</span>,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Machine learning is part of AI AI 2000 🙁"</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"I am l🙁ving 🙁 about machine learning"</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"I love AI and machine learning"</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="bow---countvectorizer" class="level1">
-<h1>BoW - CountVectorizer()</h1>
-<div id="d9665427" class="cell" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>stop_words <span class="op">=</span> stopwords.words(<span class="st">"english"</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>vectorizer <span class="op">=</span> CountVectorizer(stop_words<span class="op">=</span>stop_words)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<section id="ejemplo-de-función-de-limpieza" class="level2">
-<h2 class="anchored" data-anchor-id="ejemplo-de-función-de-limpieza">Ejemplo de función de limpieza</h2>
-<div id="64dc0bc9" class="cell" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_wordnet_pos(treebank_tag):</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># print("treebank_tag",treebank_tag)</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> treebank_tag.startswith(<span class="st">'J'</span>):</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> wordnet.ADJ</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> treebank_tag.startswith(<span class="st">'V'</span>):</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> wordnet.VERB</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> treebank_tag.startswith(<span class="st">'N'</span>):</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> wordnet.NOUN</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> treebank_tag.startswith(<span class="st">'R'</span>):</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> wordnet.ADV</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> wordnet.NOUN </span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> preprocessing_document(doc):</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">#1 transformar en minusculas</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    doc <span class="op">=</span> doc.lower()</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">#2 tokenizar</span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    tokens <span class="op">=</span> word_tokenize(doc)</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    <span class="co">#3 obtener lematizacion con etiqueta POS</span></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    tagged_tokens <span class="op">=</span> pos_tag(tokens)</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">#ELIMINAR LAS STOP-WORDS EN CASO QUE NO USE EL PARAMETRO STOPWORD EN LA VECTORIZACION</span></span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    <span class="co">#4 filtrar numeros</span></span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    filtered_tokens <span class="op">=</span> [(word,pos) <span class="cf">for</span> (word,pos) <span class="kw">in</span> tagged_tokens <span class="cf">if</span> word.isalpha()]</span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    <span class="co">#5 Lematizacion usando el pos</span></span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>    lemmatized_words <span class="op">=</span> [lemmatizer.lemmatize(word,get_wordnet_pos(pos)) <span class="cf">for</span> word, pos <span class="kw">in</span> filtered_tokens]</span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">" "</span>.join(lemmatized_words)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="visualizar-los-clusters" class="level1">
+<h1>Visualizar los clusters</h1>
+<section id="creación-de-dataframe-para-la-vizualización" class="level2">
+<h2 class="anchored" data-anchor-id="creación-de-dataframe-para-la-vizualización">Creación de dataframe para la vizualización</h2>
+<div id="777b25de" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="op">=</span> pipeline.named_steps[<span class="st">'scaler'</span>].transform(X)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df_viz <span class="op">=</span> pd.DataFrame(X_scaled, columns<span class="op">=</span>[<span class="st">'Feature1'</span>,<span class="st">'Feature2'</span>])</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>df_viz[<span class="st">'clusters'</span>] <span class="op">=</span>labels.astype(<span class="bu">str</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>df_viz[<span class="st">'index'</span>] <span class="op">=</span> X.index.astype(<span class="bu">str</span>)   </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>df_viz <span class="op">=</span> df_viz.dropna(subset<span class="op">=</span>[<span class="st">'Feature1'</span>, <span class="st">'Feature2'</span>, <span class="st">'clusters'</span>, <span class="st">'index'</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
-<section id="preprocesamiento-manual" class="level1">
-<h1>Preprocesamiento manual</h1>
-<div id="53726e38" class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> doc <span class="kw">in</span> corpus:</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> preprocessing_document(doc)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"doc: </span><span class="sc">{</span>doc<span class="sc">}</span><span class="ss">, preprocesamiento: </span><span class="sc">{</span>r<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>doc: Machine learning is all fun 1990 :) :( 🙁, preprocesamiento: machine learning be all fun
-doc: Machine learning is part of AI AI 2000 🙁, preprocesamiento: machine learning be part of ai ai
-doc: I am l🙁ving 🙁 about machine learning, preprocesamiento: i be about machine learning
-doc: I love AI and machine learning, preprocesamiento: i love ai and machine learning</code></pre>
-</div>
-</div>
-<section id="fit_transform" class="level2">
-<h2 class="anchored" data-anchor-id="fit_transform">Fit_transform</h2>
-<p>Aprende del Corpus (vocabulario) y del ser caso elimina las stop-words</p>
-<div id="243a9d19" class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>corpus_cleaned <span class="op">=</span> [preprocessing_document(doc) <span class="cf">for</span> doc <span class="kw">in</span> corpus]</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> vectorizer.fit_transform(corpus)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>X</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="visualización" class="level1">
+<h1>Visualización</h1>
+<div id="9fc8cecd" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>scatter <span class="op">=</span> alt.Chart(df_viz).mark_circle(size<span class="op">=</span><span class="dv">40</span>).encode(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    alt.X(<span class="st">'Feature1'</span>),</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    alt.Y(<span class="st">'Feature2'</span>),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    alt.Color(<span class="st">'clusters'</span>),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    tooltip<span class="op">=</span>[<span class="st">'Feature1'</span>,<span class="st">'Feature2'</span>,<span class="st">'index'</span>]</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>).interactive() </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>texto <span class="op">=</span> alt.Chart(df_viz).mark_text(</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    align<span class="op">=</span> <span class="st">'left'</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    dx <span class="op">=</span> <span class="dv">5</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    baseline<span class="op">=</span><span class="st">'middle'</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>).encode(</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    alt.X(<span class="st">'Feature1'</span>),</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    alt.Y(<span class="st">'Feature2'</span>),</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    text<span class="op">=</span><span class="st">'index'</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>scatter <span class="op">+</span>   texto</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
-<pre><code>&lt;Compressed Sparse Row sparse matrix of dtype 'int64'
-    with 16 stored elements and shape (4, 9)&gt;</code></pre>
+
+<style>
+  #altair-viz-88be9709ee3944b1bf273b9ac4eb502a.vega-embed {
+    width: 100%;
+    display: flex;
+  }
+
+  #altair-viz-88be9709ee3944b1bf273b9ac4eb502a.vega-embed details,
+  #altair-viz-88be9709ee3944b1bf273b9ac4eb502a.vega-embed details summary {
+    position: relative;
+  }
+</style>
+<div id="altair-viz-88be9709ee3944b1bf273b9ac4eb502a"></div>
+<script type="text/javascript">
+  var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
+  (function(spec, embedOpt){
+    let outputDiv = document.currentScript.previousElementSibling;
+    if (outputDiv.id !== "altair-viz-88be9709ee3944b1bf273b9ac4eb502a") {
+      outputDiv = document.getElementById("altair-viz-88be9709ee3944b1bf273b9ac4eb502a");
+    }
+
+    const paths = {
+      "vega": "https://cdn.jsdelivr.net/npm/vega@5?noext",
+      "vega-lib": "https://cdn.jsdelivr.net/npm/vega-lib?noext",
+      "vega-lite": "https://cdn.jsdelivr.net/npm/vega-lite@5.20.1?noext",
+      "vega-embed": "https://cdn.jsdelivr.net/npm/vega-embed@6?noext",
+    };
+
+    function maybeLoadScript(lib, version) {
+      var key = `${lib.replace("-", "")}_version`;
+      return (VEGA_DEBUG[key] == version) ?
+        Promise.resolve(paths[lib]) :
+        new Promise(function(resolve, reject) {
+          var s = document.createElement('script');
+          document.getElementsByTagName("head")[0].appendChild(s);
+          s.async = true;
+          s.onload = () => {
+            VEGA_DEBUG[key] = version;
+            return resolve(paths[lib]);
+          };
+          s.onerror = () => reject(`Error loading script: ${paths[lib]}`);
+          s.src = paths[lib];
+        });
+    }
+
+    function showError(err) {
+      outputDiv.innerHTML = `<div class="error" style="color:red;">${err}</div>`;
+      throw err;
+    }
+
+    function displayChart(vegaEmbed) {
+      vegaEmbed(outputDiv, spec, embedOpt)
+        .catch(err => showError(`Javascript Error: ${err.message}<br>This usually means there's a typo in your chart specification. See the javascript console for the full traceback.`));
+    }
+
+    if(typeof define === "function" && define.amd) {
+      requirejs.config({paths});
+      let deps = ["vega-embed"];
+      require(deps, displayChart, err => showError(`Error loading script: ${err.message}`));
+    } else {
+      maybeLoadScript("vega", "5")
+        .then(() => maybeLoadScript("vega-lite", "5.20.1"))
+        .then(() => maybeLoadScript("vega-embed", "6"))
+        .catch(showError)
+        .then(() => displayChart(vegaEmbed));
+    }
+  })({"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "layer": [{"mark": {"type": "circle", "size": 40}, "encoding": {"color": {"field": "clusters", "type": "nominal"}, "tooltip": [{"field": "Feature1", "type": "quantitative"}, {"field": "Feature2", "type": "quantitative"}, {"field": "index", "type": "nominal"}], "x": {"field": "Feature1", "type": "quantitative"}, "y": {"field": "Feature2", "type": "quantitative"}}, "name": "view_1"}, {"mark": {"type": "text", "align": "left", "baseline": "middle", "dx": 5}, "encoding": {"text": {"field": "index", "type": "nominal"}, "x": {"field": "Feature1", "type": "quantitative"}, "y": {"field": "Feature2", "type": "quantitative"}}}], "data": {"name": "data-b5c6900015b1fc66421e2cc99dfcfb27"}, "params": [{"name": "param_1", "select": {"type": "interval", "encodings": ["x", "y"]}, "bind": "scales", "views": ["view_1"]}], "$schema": "https://vega.github.io/schema/vega-lite/v5.20.1.json", "datasets": {"data-b5c6900015b1fc66421e2cc99dfcfb27": [{"Feature1": 0.2693818929528234, "Feature2": 0.19186974333977425, "clusters": "0", "index": "0"}, {"Feature1": -0.3037710707765842, "Feature2": -1.1405590298531176, "clusters": "1", "index": "1"}, {"Feature1": -0.8769240345059943, "Feature2": -0.6075875205759604, "clusters": "1", "index": "2"}, {"Feature1": -1.1635005163707006, "Feature2": -0.874073275214539, "clusters": "1", "index": "3"}, {"Feature1": -0.017194588911880394, "Feature2": 0.45835549797835284, "clusters": "0", "index": "4"}, {"Feature1": 1.1291113385469398, "Feature2": 1.2578127618940875, "clusters": "0", "index": "5"}, {"Feature1": -1.1635005163707006, "Feature2": -0.07461601129880438, "clusters": "1", "index": "6"}, {"Feature1": -0.017194588911880394, "Feature2": -0.07461601129880438, "clusters": "0", "index": "7"}, {"Feature1": -1.7366534801001083, "Feature2": -1.4070447844916962, "clusters": "1", "index": "8"}, {"Feature1": -0.3037710707765842, "Feature2": -0.874073275214539, "clusters": "1", "index": "9"}, {"Feature1": 1.1291113385469398, "Feature2": 0.7248412526169314, "clusters": "0", "index": "10"}, {"Feature1": -0.5903475526412906, "Feature2": -0.07461601129880438, "clusters": "1", "index": "11"}, {"Feature1": -0.5903475526412906, "Feature2": -1.1405590298531176, "clusters": "1", "index": "12"}, {"Feature1": -2.0232299619648146, "Feature2": -1.1405590298531176, "clusters": "1", "index": "13"}, {"Feature1": 2.2754172660057574, "Feature2": 1.5242985165326661, "clusters": "0", "index": "14"}, {"Feature1": 1.9888407841410538, "Feature2": 2.5902415350869807, "clusters": "0", "index": "15"}, {"Feature1": 1.1291113385469398, "Feature2": 1.2578127618940875, "clusters": "0", "index": "16"}, {"Feature1": 0.2693818929528234, "Feature2": 0.19186974333977425, "clusters": "0", "index": "17"}, {"Feature1": 1.9888407841410538, "Feature2": 0.9913270072555089, "clusters": "0", "index": "18"}, {"Feature1": 0.2693818929528234, "Feature2": 0.9913270072555089, "clusters": "0", "index": "19"}, {"Feature1": 1.1291113385469398, "Feature2": -0.07461601129880438, "clusters": "0", "index": "20"}, {"Feature1": 0.2693818929528234, "Feature2": 0.7248412526169314, "clusters": "0", "index": "21"}, {"Feature1": -1.1635005163707006, "Feature2": 0.45835549797835284, "clusters": "1", "index": "22"}, {"Feature1": 0.2693818929528234, "Feature2": -0.341101765937383, "clusters": "0", "index": "23"}, {"Feature1": -0.5903475526412906, "Feature2": -0.07461601129880438, "clusters": "1", "index": "24"}, {"Feature1": -0.017194588911880394, "Feature2": -1.1405590298531176, "clusters": "1", "index": "25"}, {"Feature1": -0.017194588911880394, "Feature2": -0.07461601129880438, "clusters": "0", "index": "26"}, {"Feature1": 0.5559583748175297, "Feature2": 0.19186974333977425, "clusters": "0", "index": "27"}, {"Feature1": 0.5559583748175297, "Feature2": -0.07461601129880438, "clusters": "0", "index": "28"}, {"Feature1": -0.8769240345059943, "Feature2": -0.6075875205759604, "clusters": "1", "index": "29"}, {"Feature1": -0.5903475526412906, "Feature2": -0.874073275214539, "clusters": "1", "index": "30"}, {"Feature1": 1.1291113385469398, "Feature2": -0.07461601129880438, "clusters": "0", "index": "31"}, {"Feature1": 0.5559583748175297, "Feature2": 1.7907842711712436, "clusters": "0", "index": "32"}, {"Feature1": 1.4156878204116436, "Feature2": 2.0572700258098235, "clusters": "0", "index": "33"}, {"Feature1": -0.3037710707765842, "Feature2": -0.874073275214539, "clusters": "1", "index": "34"}, {"Feature1": -0.017194588911880394, "Feature2": -0.6075875205759604, "clusters": "0", "index": "35"}, {"Feature1": 1.4156878204116436, "Feature2": 0.19186974333977425, "clusters": "0", "index": "36"}, {"Feature1": -0.3037710707765842, "Feature2": 0.45835549797835284, "clusters": "0", "index": "37"}, {"Feature1": -1.7366534801001083, "Feature2": -1.1405590298531176, "clusters": "1", "index": "38"}, {"Feature1": 0.2693818929528234, "Feature2": -0.07461601129880438, "clusters": "0", "index": "39"}, {"Feature1": -0.017194588911880394, "Feature2": 0.19186974333977425, "clusters": "0", "index": "40"}, {"Feature1": -1.4500769982354045, "Feature2": -3.0059593123231667, "clusters": "1", "index": "41"}, {"Feature1": -1.7366534801001083, "Feature2": -0.6075875205759604, "clusters": "1", "index": "42"}, {"Feature1": -0.017194588911880394, "Feature2": 0.19186974333977425, "clusters": "0", "index": "43"}, {"Feature1": 0.2693818929528234, "Feature2": 0.9913270072555089, "clusters": "0", "index": "44"}, {"Feature1": -0.5903475526412906, "Feature2": -1.1405590298531176, "clusters": "1", "index": "45"}, {"Feature1": 0.2693818929528234, "Feature2": 0.9913270072555089, "clusters": "0", "index": "46"}, {"Feature1": -1.1635005163707006, "Feature2": -0.6075875205759604, "clusters": "1", "index": "47"}, {"Feature1": 0.8425348566822336, "Feature2": 0.7248412526169314, "clusters": "0", "index": "48"}, {"Feature1": -0.017194588911880394, "Feature2": -0.341101765937383, "clusters": "0", "index": "49"}]}}, {"mode": "vega-lite"});
+</script>
 </div>
 </div>
-</section>
-<section id="obtener-las-palabras-finales" class="level2">
-<h2 class="anchored" data-anchor-id="obtener-las-palabras-finales">Obtener las palabras finales</h2>
-<div id="3dd86efc" class="cell" data-execution_count="7">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>vectorizer.get_feature_names_out()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="c38cff13" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>alt.renderers.enable(<span class="st">'default'</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({<span class="st">'x'</span>: [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>], <span class="st">'y'</span>: [<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>]})</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>alt.Chart(df).mark_point().encode(x<span class="op">=</span><span class="st">'x'</span>, y<span class="op">=</span><span class="st">'y'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
-<pre><code>array(['1990', '2000', 'ai', 'fun', 'learning', 'love', 'machine', 'part',
-       'ving'], dtype=object)</code></pre>
+
+<style>
+  #altair-viz-922e0ab071c54fc0a4dcc16ca33c34c0.vega-embed {
+    width: 100%;
+    display: flex;
+  }
+
+  #altair-viz-922e0ab071c54fc0a4dcc16ca33c34c0.vega-embed details,
+  #altair-viz-922e0ab071c54fc0a4dcc16ca33c34c0.vega-embed details summary {
+    position: relative;
+  }
+</style>
+<div id="altair-viz-922e0ab071c54fc0a4dcc16ca33c34c0"></div>
+<script type="text/javascript">
+  var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
+  (function(spec, embedOpt){
+    let outputDiv = document.currentScript.previousElementSibling;
+    if (outputDiv.id !== "altair-viz-922e0ab071c54fc0a4dcc16ca33c34c0") {
+      outputDiv = document.getElementById("altair-viz-922e0ab071c54fc0a4dcc16ca33c34c0");
+    }
+
+    const paths = {
+      "vega": "https://cdn.jsdelivr.net/npm/vega@5?noext",
+      "vega-lib": "https://cdn.jsdelivr.net/npm/vega-lib?noext",
+      "vega-lite": "https://cdn.jsdelivr.net/npm/vega-lite@5.20.1?noext",
+      "vega-embed": "https://cdn.jsdelivr.net/npm/vega-embed@6?noext",
+    };
+
+    function maybeLoadScript(lib, version) {
+      var key = `${lib.replace("-", "")}_version`;
+      return (VEGA_DEBUG[key] == version) ?
+        Promise.resolve(paths[lib]) :
+        new Promise(function(resolve, reject) {
+          var s = document.createElement('script');
+          document.getElementsByTagName("head")[0].appendChild(s);
+          s.async = true;
+          s.onload = () => {
+            VEGA_DEBUG[key] = version;
+            return resolve(paths[lib]);
+          };
+          s.onerror = () => reject(`Error loading script: ${paths[lib]}`);
+          s.src = paths[lib];
+        });
+    }
+
+    function showError(err) {
+      outputDiv.innerHTML = `<div class="error" style="color:red;">${err}</div>`;
+      throw err;
+    }
+
+    function displayChart(vegaEmbed) {
+      vegaEmbed(outputDiv, spec, embedOpt)
+        .catch(err => showError(`Javascript Error: ${err.message}<br>This usually means there's a typo in your chart specification. See the javascript console for the full traceback.`));
+    }
+
+    if(typeof define === "function" && define.amd) {
+      requirejs.config({paths});
+      let deps = ["vega-embed"];
+      require(deps, displayChart, err => showError(`Error loading script: ${err.message}`));
+    } else {
+      maybeLoadScript("vega", "5")
+        .then(() => maybeLoadScript("vega-lite", "5.20.1"))
+        .then(() => maybeLoadScript("vega-embed", "6"))
+        .catch(showError)
+        .then(() => displayChart(vegaEmbed));
+    }
+  })({"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "data": {"name": "data-54ce5fc5f3b61e53d857f3764dd891fc"}, "mark": {"type": "point"}, "encoding": {"x": {"field": "x", "type": "quantitative"}, "y": {"field": "y", "type": "quantitative"}}, "$schema": "https://vega.github.io/schema/vega-lite/v5.20.1.json", "datasets": {"data-54ce5fc5f3b61e53d857f3764dd891fc": [{"x": 1, "y": 4}, {"x": 2, "y": 5}, {"x": 3, "y": 6}]}}, {"mode": "vega-lite"});
+</script>
 </div>
 </div>
 </section>
+<section id="visualizar-dendogram" class="level1">
+<h1>Visualizar dendogram</h1>
+<div id="28098fbe" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>linked <span class="op">=</span> linkage(X_scaled, method<span class="op">=</span><span class="st">'ward'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </section>
-<section id="matriz-de-ocurrencias-conteos" class="level1">
-<h1>Matriz de ocurrencias (conteos)</h1>
-<p>Esta matriz muestra cada fila un documento, y cada columna una palabra</p>
-<div id="cc03a60d" class="cell" data-execution_count="8">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>X.toarray()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="8">
-<pre><code>array([[1, 0, 0, 1, 1, 0, 1, 0, 0],
-       [0, 1, 2, 0, 1, 0, 1, 1, 0],
-       [0, 0, 0, 0, 1, 0, 1, 0, 1],
-       [0, 0, 1, 0, 1, 1, 1, 0, 0]])</code></pre>
-</div>
-</div>
-<div id="ec2b0b6e" class="cell" data-execution_count="9">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(X.toarray(),columns<span class="op">=</span>vectorizer.get_feature_names_out())</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="9">
+<section id="dendograma" class="level1">
+<h1>Dendograma</h1>
+<div id="491ef497" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>dendrogram(linked,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>           orientation<span class="op">=</span><span class="st">'top'</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>           distance_sort<span class="op">=</span><span class="st">'descending'</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>           show_leaf_counts<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Dendrogram"</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Sample index"</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Distance"</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
 <div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">1990</th>
-<th data-quarto-table-cell-role="th">2000</th>
-<th data-quarto-table-cell-role="th">ai</th>
-<th data-quarto-table-cell-role="th">fun</th>
-<th data-quarto-table-cell-role="th">learning</th>
-<th data-quarto-table-cell-role="th">love</th>
-<th data-quarto-table-cell-role="th">machine</th>
-<th data-quarto-table-cell-role="th">part</th>
-<th data-quarto-table-cell-role="th">ving</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">0</th>
-<td>1</td>
-<td>0</td>
-<td>0</td>
-<td>1</td>
-<td>1</td>
-<td>0</td>
-<td>1</td>
-<td>0</td>
-<td>0</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">1</th>
-<td>0</td>
-<td>1</td>
-<td>2</td>
-<td>0</td>
-<td>1</td>
-<td>0</td>
-<td>1</td>
-<td>1</td>
-<td>0</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2</th>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>1</td>
-<td>0</td>
-<td>1</td>
-<td>0</td>
-<td>1</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">3</th>
-<td>0</td>
-<td>0</td>
-<td>1</td>
-<td>0</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>0</td>
-<td>0</td>
-</tr>
-</tbody>
-</table>
-
+<figure class="figure">
+<p><img src="hac_files/figure-html/cell-10-output-1.png" width="808" height="450" class="figure-img"></p>
+</figure>
 </div>
 </div>
 </div>

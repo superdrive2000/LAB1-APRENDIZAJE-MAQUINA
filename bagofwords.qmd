@@ -114,6 +114,7 @@ Aprende del Corpus (vocabulario) y del ser caso elimina las stop-words
 ```{python}
 corpus_cleaned = [preprocessing_document(doc) for doc in corpus]
 X = vectorizer.fit_transform(corpus)
+X
 ```
 
 ## Obtener las palabras finales

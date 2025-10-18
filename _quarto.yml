@@ -25,6 +25,8 @@ website:
           - tfidf.qmd
           - text_classification.qmd
           - LAB2.qmd
+          - Final_exam.qmd
+    
 
 
  

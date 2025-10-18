@@ -1,0 +1,577 @@
+---
+title: "EXÁMEN FINAL"
+author: "Jesus Quinga"  
+format: "html"
+code-fold: false    
+#format:
+#    html:
+#        embed-resources: true
+
+#AQUI PONER EL PATH HACIA SU AMBIENTE VIRTUAL
+execute:
+  python: C:/Users/Lenovo i5/Documents/MAESTRIA IA YACHAY TECH/APRENDIZAJE DE MAQUINA/SEMANA 1/.venv/Scripts/python.exe
+---
+
+
+# Importar librerias
+
+```{python}
+
+import pandas as pd
+import altair as alt
+import seaborn as sns
+import matplotlib.pyplot as plt
+import re
+import emoji
+from collections import Counter
+import nltk
+from nltk.corpus import stopwords
+from sklearn.decomposition import PCA
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, ConfusionMatrixDisplay
+from sklearn.linear_model import LinearRegression, LogisticRegression
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import silhouette_score
+
+
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
+
+from nltk import word_tokenize # tokenizacion
+from nltk import pos_tag #lematizacion
+from nltk.stem import WordNetLemmatizer
+from nltk.corpus import wordnet
+
+# Descargar stopwords si no lo has hecho antes
+nltk.download('stopwords')
+stop_words = set(stopwords.words('spanish'))
+
+```
+
+
+# 1. Análisis Exploratorio de Datos (EDA):
+
+## Cargar el data set
+
+```{python}
+url = "https://raw.githubusercontent.com/erickedu85/dataset/refs/heads/master/tweets/1500_tweets_con_toxicity.csv"
+data = pd.read_csv(url)
+data.head()
+```
+
+### Nombre de las columnas y Data Types
+
+Tipo y cantidad de variables (numéricas, categóricas, texto).
+```{python}
+data.dtypes
+```
+
+### Estadísticas descriptivas (mínimos, máximos, media, mediana, distribución).
+
+Imprimimos las estadisticas descritivas generales
+
+```{python}
+print(data.describe())
+```
+Imprimimos las estadisticas descritivas del target
+```{python}
+# Estadísticas descriptivas
+print("Estadísticas de TOXICITY (score):")
+print("Mínimo:", data['toxicity_score'].min())
+print("Máximo:", data['toxicity_score'].max())
+print("Media:", data['toxicity_score'].mean())
+print("Mediana:", data['toxicity_score'].median())
+
+
+
+```
+
+
+
+### Distribución de la variable toxicity_score.
+
+```{python}
+alt.Chart(data).mark_bar().encode(
+    alt.X('toxicity_score', bin=alt.Bin(maxbins=30), title='Score de Toxicidad'),
+    alt.Y('count()', title='Frecuencia'),
+    tooltip=['toxicity_score']
+).properties(
+    title='Distribución interactiva de toxicity_score (30 bins) ',
+    width=600,
+    height=400
+).interactive()
+
+```
+
+
+### Detección de valores nulos, duplicados o atípicos.
+
+```{python}
+# Nulos
+print("Valores nulos por columna:\n", data.isnull().sum())
+
+# Duplicados en target
+print("\nToxicidad duplicada:", data.duplicated(subset='toxicity_score').sum())
+
+# Duplicados en tweets
+print("\nTweets duplicados:", data.duplicated(subset='content').sum())
+
+
+# Ouliers
+
+# Crear boxplot interactivo
+alt.Chart(data).mark_boxplot(extent='min-max').encode(
+    x=alt.X('toxicity_score:Q', title='Score de Toxicidad')
+).properties(
+    title='Boxplot interactivo de toxicity_score',
+    width=600,
+    height=100
+).interactive()
+
+
+```
+Cantidad de valotes atipicos
+
+
+```{python}
+# Atípicos en TOXICITY
+q1 = data['toxicity_score'].quantile(0.25)
+q3 = data['toxicity_score'].quantile(0.75)
+iqr = q3 - q1
+outliers = data[(data['toxicity_score'] < q1 - 1.5 * iqr) | (data['toxicity_score'] > q3 + 1.5 * iqr)]
+print("\nCantidad de outliers en toxicity_score:", len(outliers))
+```
+
+
+### Nubes de palabras o frecuencias para texto.
+
+```{python}
+# Limpiar texto
+def limpiar_texto(texto):
+    texto = str(texto).lower()
+    texto = re.sub(r"http\S+|@\w+|#\w+|[^a-záéíóúñ\s]", "", texto)
+    texto = re.sub(r"\s+", " ", texto).strip()
+    return texto
+```
+
+```{python}
+
+data['content_limpio_viz'] = data['content'].apply(limpiar_texto)
+
+# Tokenizar y filtrar stop words
+palabras = " ".join(data['content_limpio_viz']).split()
+palabras_filtradas = [p for p in palabras if p not in stop_words and len(p) > 2]
+
+# Contar frecuencias
+frecuencias = Counter(palabras_filtradas)
+top_palabras = frecuencias.most_common(50)
+
+# Convertir a DataFrame
+freq_df = pd.DataFrame(top_palabras, columns=['Palabra', 'Frecuencia'])
+
+# Gráfico de barras con Altair
+alt.Chart(freq_df).mark_bar().encode(
+    x=alt.X('Frecuencia:Q', title='Frecuencia'),
+    y=alt.Y('Palabra:N', sort='-x', title='Palabra'),
+    tooltip=['Palabra', 'Frecuencia']
+).properties(
+    title=' Frecuencia de palabras (sin stop words)',
+    width=600,
+    height=800
+)
+
+
+```
+
+### Conluciones del EDA
+
+1.  Los valores de toxity_score se hallan entre 0.001939  y 0.9391453
+2. Existen 153 valores nulos de la columna toxicity_score 
+3. Existen 9 tweets duplicados
+4. El top 3 de palabras más comunes de son "luisa" , " país" y "presidente"
+
+5. La mediana de "toxicity_score" es 0.1883923 por lo que se usara este dato como el umbral para la conversión binaria en la tarea de clasificación ya que de esta forma se evita el desbalance de clases
+
+# 2. Preprocesamiento y codificación:
+
+
+
+
+Definimos una función auxiliar de limpieza
+
+```{python}
+# Limpiar texto
+
+lemmatizer = WordNetLemmatizer()
+
+
+def get_wordnet_pos(treebank_tag):
+    # print("treebank_tag",treebank_tag)
+    if treebank_tag.startswith('J'):
+        return wordnet.ADJ
+    elif treebank_tag.startswith('V'):
+        return wordnet.VERB
+    elif treebank_tag.startswith('N'):
+        return wordnet.NOUN
+    elif treebank_tag.startswith('R'):
+        return wordnet.ADV
+    else:
+        return wordnet.NOUN 
+
+
+def limpiar_texto(doc):
+
+    doc = str(doc).lower()
+    doc = re.sub(r"http\S+|@\w+|#\w+", "", doc) # elimnar meciones hasgtaghs y urls
+    doc = re.sub(r"\s+", " ", doc).strip() #dobles espacios
+    doc = emoji.replace_emoji(doc, replace='')
+
+
+    #1 tokenizar
+    tokens = word_tokenize(doc)
+
+    #2 obtener lematizacion con etiqueta POS
+    tagged_tokens = pos_tag(tokens)
+
+    #ELIMINAR LAS STOP-WORDS EN CASO QUE NO USE EL PARAMETRO STOPWORD EN LA VECTORIZACION
+
+    #3 filtrar numeros
+    filtered_tokens = [(word,pos) for (word,pos) in tagged_tokens if word.isalpha()]
+
+    #4 Lematizacion usando el pos
+    lemmatized_words = [lemmatizer.lemmatize(word,get_wordnet_pos(pos)) for word, pos in filtered_tokens]
+
+    return " ".join(lemmatized_words)
+
+
+
+    
+```
+
+Selección de variables utiles (features y target):
+```{python}
+data_proc = data[['content','toxicity_score']]
+```
+
+Imputación y tratamiento de valores nulos y duplicados
+
+```{python}
+data_proc = data_proc.drop_duplicates(subset='content').reset_index(drop=True)  
+```
+
+Se eliminaron los 153 registros con valores nulos en toxicity_score (≈10% del total), ya que esta variable es el objetivo principal del modelado y su imputación podría introducir sesgos no deseados
+
+
+
+```{python}
+data_proc = data_proc.dropna(subset=['toxicity_score']).reset_index(drop=True)
+```
+
+
+Limpieza del tweet
+
+```{python}
+data_proc['content_limpio'] = data_proc['content'].apply(limpiar_texto)
+data_proc
+```
+Creación de transformes y column transformer
+
+```{python}
+text_features = ['content_limpio']
+num_features = ['toxicity_score']
+
+
+# Pipeline de texto
+stopwords = stopwords.words('spanish')
+text_pipeline = Pipeline([
+    ('vectorizer',CountVectorizer(stop_words=stopwords))
+])
+
+# ColumnTransformer
+preprocessor = ColumnTransformer([
+    ('text', text_pipeline, 'content_limpio')
+])
+
+
+```
+
+
+
+
+# 3. Clasificación:
+Para crear el target usamos la mediana como umbral ya que este valor divide el dataset en partes iguales y se evita el desbalance de clases.
+
+```{python}
+
+umbral = data_proc['toxicity_score'].median()
+print(umbral)
+data_proc['toxic'] = (data_proc['toxicity_score'] >= umbral).astype(int)
+
+```
+Dividir dataset limpio
+
+```{python}
+# Separar variables
+X = data_proc[['content_limpio']]
+y = data_proc['toxic']
+
+
+# Dividir datos
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2,random_state=42,stratify=y)
+
+```
+
+
+
+Pipeline para clasificacion
+```{python}
+# Pipeline completo
+clf_pipeline = Pipeline([
+    ('preprocessing', preprocessor),
+    ('classifier', MultinomialNB())
+])
+```
+
+Entrenamiento
+
+```{python}
+clf_pipeline.fit(X_train, y_train)
+```
+
+## 7. Evaluacion
+
+
+```{python}
+y_pred = clf_pipeline.predict(X_test)
+accuracy = accuracy_score(y_test,y_pred)
+precision = precision_score(y_test,y_pred)
+recall = recall_score(y_test,y_pred)
+f1 = f1_score(y_test,y_pred)
+
+print(f"accuracy: {accuracy}")
+print(f"precision: {precision}")
+print(f"recall: {recall}")
+print(f"f1: {f1}")
+
+```
+
+El modelo detecta bien los tweets tóxicos (alto recall), lo cual es útil para minimizar falsos negativos (es decir, no dejar pasar contenido tóxico).
+
+Sin embargo, tiene una precision más baja, lo que indica que algunos tweets no tóxicos están siendo clasificados como tóxicos (falsos positivos).
+
+El F1-score de 0.745 muestra un buen equilibrio general, ideal cuando ambas clases son importantes y hay cierto desbalance.
+
+
+## 8. Matriz de Confusión
+
+
+
+```{python}
+ConfusionMatrixDisplay.from_predictions(y_test,y_pred)
+```
+En la grefica se puede observar visualmente lo discutido en el apartado anterior. Adicinalmente, sobre la diaginal principal se observan los numero más grandes.
+
+
+# 4. Regresión:
+Dividir dataset limpio
+
+```{python}
+# Separar variables
+X = data_proc[['content_limpio']]
+y = data_proc['toxicity_score']
+
+
+# Dividir datos
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2,random_state=42)
+
+```
+
+
+
+Pipeline para clasificacion
+```{python}
+# Pipeline completo
+reg_pipeline = Pipeline([
+    ('preprocessing', preprocessor),
+    ('classifier', LinearRegression())
+])
+```
+
+Entrenamiento
+
+```{python}
+reg_pipeline.fit(X_train, y_train)
+```
+
+## Evaluación
+
+
+```{python}
+y_pred_pipe = reg_pipeline.predict(X_test)
+# Evaluar el modelo
+mse = mean_squared_error(y_test, y_pred_pipe)
+r2 = r2_score(y_test, y_pred_pipe)
+print("MSE:", mse)
+print("R2:", r2)
+
+```
+
+
+El MSE es moderado, lo que indica que el modelo no está cometiendo errores enormes, pero tampoco es muy preciso.
+
+El R² es bajo (0.15), lo que significa que el modelo no está capturando bien la estructura del fenómeno. En otras palabras, los tweets tienen una toxicidad difícil de predecir solo con las variables actuales (probablemente solo texto).
+
+Esto sugiere que el modelo necesita más información o mejores representaciones del texto.
+
+##  Valores reales vs predichos
+
+```{python}
+import matplotlib.pyplot as plt
+plt.scatter(y_test, y_pred_pipe)
+plt.xlabel("Valores Reales (y_test)")
+plt.ylabel("Valores Predichos (y_pred_pipe)")
+plt.title("Gráfico de Dispersión: Valores Reales vs Predichos")
+plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=2)
+plt.show()
+
+```
+
+Del gráfico tambien se puede observar que si bien existe un ligera correlación positiva hay mucha variabilidad entre el valor predicho y el real
+
+# 5. Clustering:
+
+
+```{python}
+
+text_pipeline = Pipeline([
+    ('tfidf', TfidfVectorizer(max_features=1000,stop_words=stopwords))
+])
+
+preprocessor = ColumnTransformer([
+    ('text', text_pipeline, 'content_limpio'),
+    ('score', 'passthrough', ['toxicity_score'])  # sin escalado
+])
+```
+
+# Transformar los datos
+
+### Calcular los silhouette_scores
+```{python}
+X_cluster = preprocessor.fit_transform(data_proc[['content_limpio', 'toxicity_score']])
+silhouette_scores = []
+k_range = range(2,11) #valores posibles de k
+
+for k in k_range:
+    kmeans = KMeans(n_clusters=k,random_state=42)
+    labels = kmeans.fit_predict(X_cluster)
+    score = silhouette_score(X_cluster, labels)
+    silhouette_scores.append(score)
+
+k_optimo = k_range[silhouette_scores.index(max(silhouette_scores))]
+print("K_OPTIMO",k_optimo)
+
+```
+
+### Visualizar los silhouette_scores
+
+```{python}
+
+sil_df = pd.DataFrame(
+    {
+        'K':list(k_range),
+        'sil':silhouette_scores
+    }
+)
+
+# elbow_df
+
+alt.Chart(sil_df).mark_line(point=True).encode(
+    alt.X("K"),
+    alt.Y("sil"),
+    tooltip=["K","sil"]
+).properties(
+    title="silhouette scores"
+).interactive()
+
+```
+
+## Clusterización
+## Pipeline
+
+```{python}
+
+pipeline = Pipeline(
+    [
+        ('preproces',preprocessor),
+        ('kmeans',KMeans(random_state=42))
+    ]
+)
+```
+## Clusterizacion con Pipeline 
+
+```{python}
+
+
+pipeline.set_params(kmeans__n_clusters= 2)
+data_proc['clusters'] = pipeline.fit_predict(data_proc[['content_limpio', 'toxicity_score']])
+data_proc.head()
+```
+
+
+## Visualizar la clusterización
+
+
+```{python}
+# Reducir a 2 dimensiones para graficar los clusters ya que estamos trabajando con texto vectorizado
+pca = PCA(n_components=2, random_state=42)
+X_reducido = pca.fit_transform(X_cluster)  # X_cluster es el resultado del preprocessor
+
+
+
+# Asegúrate de tener las etiquetas de cluster
+labels = data_proc['clusters']
+
+# Crear DataFrame para graficar
+df_plot = pd.DataFrame(X_reducido, columns=['PC1', 'PC2'])
+df_plot['cluster'] = labels
+
+# Graficar
+plt.figure(figsize=(10, 6))
+sns.scatterplot(data=df_plot, x='PC1', y='PC2', hue='cluster', palette='tab10', s=60)
+plt.title('Visualización de Clusters con PCA')
+plt.xlabel('Componente Principal 1')
+plt.ylabel('Componente Principal 2')
+plt.legend(title='Cluster')
+plt.grid(True)
+plt.show()
+```
+
+
+Se aplicó clustering mediante K-means sobre representaciones TF-IDF del texto y toxicity_score. Esto permitió agrupar los tweets en 5 grupos según similitud semántica y nivel de toxicidad. Los clusters revelan una division de la data en dos grupos.
+
+# 6.Conclusiones:
+
+La calidad de los datos fue aceptable para el análisis, aunque se evidenciaron desafíos como la presencia de nulos y twets duplicados. El campo toxicity_score, ya normalizado en el rango [0, 1], permitió generar un target binario útil para tareas de clasificación, aunque su distribución inicial requirió ajustes en el umbral para evitar desbalance extremo entre clases usando la mediana.
+
+En clasificación, los modelos lograron un rendimiento razonable, destacando un recall alto (≈ 83%), lo que indica buena capacidad para detectar contenido tóxico. Sin embargo, la precisión moderada (≈ 68%) sugiere que aún hay falsos positivos que podrían afectar la utilidad práctica del sistema en entornos sensibles. El F1-score equilibrado (≈ 0.74) refleja un compromiso aceptable entre ambos extremos.
+
+En regresión, el modelo logró un MSE bajo (≈ 0.055), pero el R² limitado (≈ 0.15) indica que el texto por sí solo no explica suficientemente la variabilidad del toxicity_score. Esto sugiere que el fenómeno es complejo y podría beneficiarse de variables adicionales o representaciones más profundas del lenguaje.
+
+La etapa de clusterización permitió descubrir patrones en los datos. El análisis del silhouette score indicaron que 2 clusters ofrecen una segmentación coherente, revelando grupos de tweets con similitudes semánticas y niveles de toxicidad diferenciados. 
+
+## Proponer mejoras o pasos futuros.
+Explorra el uso de mas features para optimizar el rendimiento en clasificación y regresión.
+
+Explorar modelos más robustos como XGBoost, LightGBM o redes neuronales para mejorar el rendimiento en clasificación y regresión.
+
+Expandir el dataset con más ejemplos y metadatos (fecha, autor, contexto) para enriquecer el análisis.
+
+Evaluar interpretabilidad con herramientas como SHAP o LIME para entender mejor las decisiones del modelo.
+
